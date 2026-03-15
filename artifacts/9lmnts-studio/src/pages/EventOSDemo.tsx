@@ -1,669 +1,570 @@
-import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { AreaChart, Area, ResponsiveContainer, YAxis } from "recharts";
+import { useState, useEffect, useRef } from "react";
 import {
-  AreaChart,
-  Area,
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  LineChart,
-  Line,
-  PieChart,
-  Pie,
-  Cell,
-} from "recharts";
-import {
+  ChevronLeft,
+  ShoppingBag,
   Zap,
+  ArrowRight,
+  X,
+  Shield,
+  Check,
+  Music,
+  Crown,
+  Star,
+  MessageSquare,
   TrendingUp,
   Users,
-  DollarSign,
-  Shield,
-  Star,
-  CheckCircle,
-  ArrowRight,
-  Play,
-  X,
-  Crown,
-  Sparkles,
-  BarChart2,
-  Globe,
-  Cpu,
-  Lock,
-  ChevronDown,
-  Music,
-  Briefcase,
-  Heart,
 } from "lucide-react";
-
-type Theme = "nightlife" | "corporate" | "wedding";
-
-interface ThemeConfig {
-  label: string;
-  icon: React.ComponentType<{ className?: string }>;
-  primary: string;
-  secondary: string;
-  bg: string;
-  card: string;
-  text: string;
-  accent: string;
-  gradient: string;
-  emoji: string;
-}
-
-const themes: Record<Theme, ThemeConfig> = {
-  nightlife: {
-    label: "Nightlife",
-    icon: Music,
-    primary: "#FF7A00",
-    secondary: "#FF3D00",
-    bg: "#0A0A0A",
-    card: "#111111",
-    text: "#FFFFFF",
-    accent: "#FF7A00",
-    gradient: "from-orange-600 to-red-600",
-    emoji: "🎵",
-  },
-  corporate: {
-    label: "Corporate",
-    icon: Briefcase,
-    primary: "#0066FF",
-    secondary: "#0099FF",
-    bg: "#050F1A",
-    card: "#0A1A2A",
-    text: "#FFFFFF",
-    accent: "#0099FF",
-    gradient: "from-blue-600 to-cyan-500",
-    emoji: "💼",
-  },
-  wedding: {
-    label: "Wedding",
-    icon: Heart,
-    primary: "#C0A060",
-    secondary: "#E8C879",
-    bg: "#0D0A08",
-    card: "#1A1410",
-    text: "#F5F0E8",
-    accent: "#E8C879",
-    gradient: "from-yellow-600 to-amber-400",
-    emoji: "💍",
-  },
-};
-
-const revenueData = [
-  { month: "Jan", manual: 12000, eventos: 28000 },
-  { month: "Feb", manual: 15000, eventos: 35000 },
-  { month: "Mar", manual: 11000, eventos: 42000 },
-  { month: "Apr", manual: 18000, eventos: 56000 },
-  { month: "May", manual: 14000, eventos: 71000 },
-  { month: "Jun", manual: 20000, eventos: 95000 },
-];
-
-const ticketData = [
-  { time: "8PM", sold: 45 },
-  { time: "9PM", sold: 120 },
-  { time: "10PM", sold: 280 },
-  { time: "11PM", sold: 410 },
-  { time: "12AM", sold: 520 },
-  { time: "1AM", sold: 600 },
-];
-
-const satisfactionData = [
-  { name: "Excellent", value: 68, color: "#FF7A00" },
-  { name: "Good", value: 22, color: "#FF3D00" },
-  { name: "Average", value: 8, color: "#333" },
-  { name: "Poor", value: 2, color: "#222" },
-];
-
-const features = [
-  { icon: Zap, title: "Real-time Analytics", desc: "Live event metrics and revenue tracking" },
-  { icon: Users, title: "Guest Management", desc: "VIP lists, check-ins, capacity control" },
-  { icon: DollarSign, title: "Smart Ticketing", desc: "Dynamic pricing with surge detection" },
-  { icon: Shield, title: "Fraud Prevention", desc: "AI-powered ticket verification" },
-  { icon: Globe, title: "Multi-venue", desc: "Manage all locations from one dashboard" },
-  { icon: Cpu, title: "AI Predictions", desc: "Predict crowd flow and bar demand" },
-];
-
-const battleMetrics = [
-  { label: "Revenue per Event", manual: "$12K", eventos: "$47K", winner: "eventos" },
-  { label: "Setup Time", manual: "3 days", eventos: "2 hours", winner: "eventos" },
-  { label: "No-show Rate", manual: "18%", eventos: "3%", winner: "eventos" },
-  { label: "Staff Required", manual: "12 people", eventos: "4 people", winner: "eventos" },
-  { label: "Ticket Fraud", manual: "High", eventos: "Near Zero", winner: "eventos" },
-];
-
-const vipGuests = [
-  { name: "Marcus V.", tier: "Diamond", spend: "$2,400", table: "VIP-1", status: "arrived" },
-  { name: "Sophia K.", tier: "Platinum", spend: "$1,800", table: "VIP-3", status: "arrived" },
-  { name: "DJ Khalil", tier: "Diamond", spend: "$3,200", table: "Artist", status: "en-route" },
-  { name: "Elena R.", tier: "Gold", spend: "$950", table: "VIP-7", status: "arrived" },
-  { name: "Marco T.", tier: "Platinum", spend: "$1,600", table: "VIP-2", status: "pending" },
-];
-
-const plans = [
-  {
-    name: "EventOS Basic",
-    price: "$1,500",
-    period: "single event",
-    features: ["Single event license", "Real-time dashboard", "Guest check-in app", "Basic analytics", "Email support"],
-    highlight: false,
-    badge: null,
-  },
-  {
-    name: "EventOS Premium",
-    price: "$5,000",
-    period: "white-label",
-    features: ["Everything in Basic", "White-label branding", "AI assistant included", "Multi-event access", "VIP guest management", "Priority 24/7 support", "Custom integrations"],
-    highlight: true,
-    badge: "Most Popular",
-  },
-];
-
-interface StorePanelProps {
-  theme: ThemeConfig;
-  onClose: () => void;
-  onBook: (plan: string) => void;
-}
-
-function StorePanel({ theme, onClose, onBook }: StorePanelProps) {
-  return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
-      style={{ backgroundColor: "rgba(0,0,0,0.85)" }}
-    >
-      <motion.div
-        initial={{ scale: 0.9, y: 20 }}
-        animate={{ scale: 1, y: 0 }}
-        exit={{ scale: 0.9, y: 20 }}
-        className="relative w-full max-w-4xl rounded-2xl p-8 border"
-        style={{ backgroundColor: theme.card, borderColor: theme.primary + "33" }}
-      >
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 p-2 rounded-full transition-colors"
-          style={{ color: theme.text, backgroundColor: "#ffffff11" }}
-        >
-          <X className="w-5 h-5" />
-        </button>
-        <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold mb-2" style={{ color: theme.text }}>
-            Get EventOS
-          </h2>
-          <p style={{ color: theme.text + "99" }}>Choose the plan that transforms your events</p>
-        </div>
-        <div className="grid md:grid-cols-2 gap-6">
-          {plans.map((plan) => (
-            <div
-              key={plan.name}
-              className="rounded-xl p-6 border relative"
-              style={{
-                backgroundColor: plan.highlight ? theme.primary + "15" : theme.bg,
-                borderColor: plan.highlight ? theme.primary : "#333",
-              }}
-            >
-              {plan.badge && (
-                <span
-                  className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-xs font-bold text-black"
-                  style={{ backgroundColor: theme.primary }}
-                >
-                  {plan.badge}
-                </span>
-              )}
-              <h3 className="text-xl font-bold mb-1" style={{ color: theme.text }}>{plan.name}</h3>
-              <div className="mb-4">
-                <span className="text-4xl font-black" style={{ color: plan.highlight ? theme.primary : theme.text }}>
-                  {plan.price}
-                </span>
-                <span className="text-sm ml-2" style={{ color: theme.text + "66" }}>/{plan.period}</span>
-              </div>
-              <ul className="space-y-2 mb-6">
-                {plan.features.map((f) => (
-                  <li key={f} className="flex items-center gap-2 text-sm" style={{ color: theme.text + "cc" }}>
-                    <CheckCircle className="w-4 h-4 flex-shrink-0" style={{ color: theme.primary }} />
-                    {f}
-                  </li>
-                ))}
-              </ul>
-              <button
-                onClick={() => onBook(plan.name)}
-                className="w-full py-3 rounded-xl font-bold transition-all hover:opacity-90 active:scale-95"
-                style={{
-                  backgroundColor: plan.highlight ? theme.primary : "#ffffff22",
-                  color: plan.highlight ? "#000" : theme.text,
-                }}
-              >
-                Get Started →
-              </button>
-            </div>
-          ))}
-        </div>
-      </motion.div>
-    </motion.div>
-  );
-}
+import {
+  SOUND_CLASH_DATA,
+  CORPORATE_CLASH_DATA,
+  RECEPTION_OS_DATA,
+  EventOSData,
+} from "./EventOSData";
 
 interface EventOSDemoProps {
   onNavigate?: (page: string, service?: string) => void;
 }
 
+const THEMES: Record<string, EventOSData> = {
+  nightlife: SOUND_CLASH_DATA,
+  corporate: CORPORATE_CLASH_DATA,
+  wedding: RECEPTION_OS_DATA,
+};
+
+const generateChartData = () =>
+  Array.from({ length: 20 }, (_, i) => ({
+    time: i,
+    value: 40 + Math.random() * 40 + (i > 15 ? 20 : 0),
+  }));
+
 export default function EventOSDemo({ onNavigate }: EventOSDemoProps) {
-  const [activeTheme, setActiveTheme] = useState<Theme>("nightlife");
-  const [showStore, setShowStore] = useState(false);
-  const [liveTickets, setLiveTickets] = useState(847);
-  const [liveRevenue, setLiveRevenue] = useState(124560);
-  const [battleStep, setBattleStep] = useState(0);
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const theme = themes[activeTheme];
+  const [activeThemeId, setActiveThemeId] = useState<string>("nightlife");
+  const activeData = THEMES[activeThemeId];
+  const { theme, labels, contestants, liveStats, storeItems, requests, vipUsers } = activeData;
+
+  const [votes, setVotes] = useState<Record<string, number>>({
+    [contestants[0].id]: contestants[0].initialVotes,
+    [contestants[1].id]: contestants[1].initialVotes,
+  });
+  const [hypeData, setHypeData] = useState(generateChartData());
+  const [showStoreModal, setShowStoreModal] = useState(false);
+  const [notification, setNotification] = useState<string | null>(null);
+  const [chartWidth, setChartWidth] = useState(0);
+  const [purchasedItems, setPurchasedItems] = useState<Record<string, boolean>>({});
+  const chartContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    intervalRef.current = setInterval(() => {
-      setLiveTickets((p) => p + Math.floor(Math.random() * 3));
-      setLiveRevenue((p) => p + Math.floor(Math.random() * 200));
+    setVotes({
+      [contestants[0].id]: contestants[0].initialVotes,
+      [contestants[1].id]: contestants[1].initialVotes,
+    });
+    setPurchasedItems({});
+  }, [activeThemeId, contestants]);
+
+  useEffect(() => {
+    if (!chartContainerRef.current) return;
+    const ro = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        if (entry.contentRect.width > 0) setChartWidth(entry.contentRect.width);
+      }
+    });
+    ro.observe(chartContainerRef.current);
+    return () => ro.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setVotes((prev) => {
+        const id1 = contestants[0].id;
+        const id2 = contestants[1].id;
+        const change = Math.random() > 0.5 ? 0.2 : -0.2;
+        return {
+          ...prev,
+          [id1]: Math.min(90, Math.max(10, (prev[id1] ?? 50) + change)),
+          [id2]: Math.min(90, Math.max(10, (prev[id2] ?? 50) - change)),
+        };
+      });
+      setHypeData((prev) => [
+        ...prev.slice(1),
+        { time: prev[prev.length - 1].time + 1, value: 50 + Math.random() * 40 },
+      ]);
     }, 2000);
-    return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current);
-    };
-  }, []);
+    return () => clearInterval(interval);
+  }, [contestants]);
 
-  useEffect(() => {
-    const t = setInterval(() => {
-      setBattleStep((p) => (p + 1) % (battleMetrics.length + 1));
-    }, 1500);
-    return () => clearInterval(t);
-  }, []);
+  const handleAction = (msg: string) => {
+    setNotification(msg);
+    setTimeout(() => setNotification(null), 3000);
+  };
 
-  const handleGetEventOS = (plan?: string) => {
-    setShowStore(false);
-    if (onNavigate) {
-      onNavigate("booking", plan || "EventOS Premium");
-    }
+  const handlePurchase = (itemId: string, itemName: string) => {
+    setPurchasedItems((p) => ({ ...p, [itemId]: true }));
+    handleAction(`✅ ${itemName} purchased!`);
+    setTimeout(() => setShowStoreModal(false), 1200);
+  };
+
+  const handleGetStarted = (plan?: string) => {
+    setShowStoreModal(false);
+    if (onNavigate) onNavigate("booking", plan || "EventOS Premium");
   };
 
   return (
     <div
-      className="min-h-screen font-sans transition-colors duration-500"
-      style={{ backgroundColor: theme.bg, color: theme.text }}
+      className={`min-h-screen font-sans text-white overflow-x-hidden relative transition-colors duration-500 ${theme.background}`}
     >
+      {/* Background */}
+      <div className="fixed inset-0 bg-[url('https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=2070')] bg-cover bg-center opacity-10 pointer-events-none mix-blend-screen" />
+      <div className={`fixed inset-0 bg-gradient-to-b ${theme.background} pointer-events-none`} />
+
       {/* Nav */}
-      <nav
-        className="sticky top-0 z-40 border-b backdrop-blur-md"
-        style={{ backgroundColor: theme.bg + "ee", borderColor: theme.primary + "22" }}
-      >
-        <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+      <nav className="sticky top-0 z-40 border-b border-white/5 backdrop-blur-xl bg-black/80">
+        <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+          <button
+            onClick={() => onNavigate?.("demo")}
+            className="flex items-center text-white/60 hover:text-white transition-colors text-sm font-medium"
+          >
+            <ChevronLeft size={18} className="mr-1" />
+            Exit
+          </button>
+
           <div className="flex items-center gap-3">
-            <div
-              className="w-8 h-8 rounded-lg flex items-center justify-center font-black text-black text-sm"
-              style={{ backgroundColor: theme.primary }}
-            >
-              9L
-            </div>
-            <span className="font-bold text-lg" style={{ color: theme.text }}>9LMNTS Studio</span>
-            <span
-              className="hidden sm:block px-2 py-0.5 rounded text-xs font-bold"
-              style={{ backgroundColor: theme.primary + "22", color: theme.primary }}
-            >
-              EventOS
+            <span className="font-bold tracking-wider text-lg hidden sm:block">
+              {labels.appName}{" "}
+              <span style={{ color: theme.primary }}>{labels.appSubtitle}</span>
             </span>
-          </div>
-          <div className="flex items-center gap-2">
-            {(["nightlife", "corporate", "wedding"] as Theme[]).map((t) => {
-              const Icon = themes[t].icon;
-              return (
+            <div className="flex bg-white/10 rounded-lg p-1 ml-2">
+              {(Object.keys(THEMES) as string[]).map((key) => (
                 <button
-                  key={t}
-                  onClick={() => setActiveTheme(t)}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all"
-                  style={{
-                    backgroundColor: activeTheme === t ? theme.primary : "#ffffff11",
-                    color: activeTheme === t ? "#000" : theme.text + "99",
-                  }}
+                  key={key}
+                  onClick={() => setActiveThemeId(key)}
+                  className={`px-3 py-1 rounded-md text-xs font-bold transition-all ${
+                    activeThemeId === key
+                      ? "bg-white text-black shadow-lg"
+                      : "text-white/40 hover:text-white"
+                  }`}
                 >
-                  <Icon className="w-3.5 h-3.5" />
-                  <span className="hidden sm:block capitalize">{t}</span>
+                  {THEMES[key].name}
                 </button>
-              );
-            })}
+              ))}
+            </div>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <div className="hidden sm:flex items-center gap-2 px-3 py-1 rounded-full bg-red-500/10 border border-red-500/20 text-red-500 text-xs font-bold animate-pulse">
+              <span className="w-2 h-2 rounded-full bg-red-500" />
+              {labels.liveBadge}
+            </div>
             <button
-              onClick={() => setShowStore(true)}
-              className="ml-2 px-4 py-1.5 rounded-lg text-sm font-bold text-black transition-all hover:opacity-90"
-              style={{ backgroundColor: theme.primary }}
+              onClick={() => setShowStoreModal(true)}
+              className="flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold transition-all border"
+              style={{
+                borderColor: `${theme.primary}33`,
+                backgroundColor: `${theme.primary}1A`,
+                color: theme.primary,
+              }}
             >
-              Get EventOS
+              <ShoppingBag size={14} />
+              <span className="hidden sm:inline">Store</span>
             </button>
+            {onNavigate && (
+              <button
+                onClick={() => onNavigate("booking", "EventOS Premium")}
+                className="hidden sm:flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-bold text-black transition-all hover:opacity-90"
+                style={{ backgroundColor: theme.primary }}
+              >
+                Get EventOS <ArrowRight size={12} />
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* Ticker */}
+        <div className="border-y border-white/5 overflow-hidden py-2" style={{ backgroundColor: `${theme.primary}0D` }}>
+          <div
+            className="animate-marquee whitespace-nowrap flex gap-12 text-xs font-medium"
+            style={{ color: `${theme.primary}CC`, animation: "marquee 30s linear infinite" }}
+          >
+            {[...labels.ticker, ...labels.ticker].map((item, i) => (
+              <span key={i} className="mr-8">{item}</span>
+            ))}
           </div>
         </div>
       </nav>
 
-      <div className="max-w-7xl mx-auto px-4 py-8 space-y-12">
-        {/* Hero */}
-        <section className="text-center py-12">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
+      {/* Main Bento Grid */}
+      <main className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 relative z-10">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 auto-rows-min">
+
+          {/* 1. Main Battle Stage */}
+          <div
+            className={`md:col-span-8 relative group rounded-3xl overflow-hidden border border-white/10 transition-colors duration-500 ${theme.cardBg}`}
           >
             <div
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium mb-6"
-              style={{ backgroundColor: theme.primary + "20", color: theme.primary }}
-            >
-              <Sparkles className="w-4 h-4" />
-              Live Demo — {theme.emoji} {theme.label} Mode
+              className="absolute inset-0 opacity-50"
+              style={{ background: `linear-gradient(135deg, ${theme.primary}1A, transparent)` }}
+            />
+            <div className="relative p-6 min-h-[420px] flex flex-col">
+              <div className="flex justify-between items-start mb-6">
+                <div>
+                  <h2 className="text-sm font-bold tracking-widest uppercase mb-1" style={{ color: theme.primary }}>
+                    {labels.battleSubtitle}
+                  </h2>
+                  <h1 className="text-3xl font-black italic">{labels.battleTitle}</h1>
+                </div>
+                <div className="px-3 py-1 rounded-lg bg-white/5 border border-white/10 text-xs font-mono">
+                  12:45 REMAINING
+                </div>
+              </div>
+
+              <div className="flex-1 grid grid-cols-2 gap-4 sm:gap-8 items-end pb-8">
+                {contestants.map((contestant, idx) => {
+                  const pct = Math.round(votes[contestant.id] ?? 50);
+                  return (
+                    <div key={contestant.id} className="text-center relative">
+                      <div
+                        className="relative mx-auto w-24 h-24 sm:w-32 sm:h-32 mb-4 rounded-full p-1 transition-all duration-500"
+                        style={{ background: `linear-gradient(135deg, ${contestant.color}, transparent)` }}
+                      >
+                        <img
+                          src={contestant.image}
+                          alt={contestant.name}
+                          className="w-full h-full rounded-full object-cover border-4 border-black/40"
+                        />
+                        <div
+                          className={`absolute -bottom-2 -right-2 w-8 h-8 rounded-full flex items-center justify-center border border-white/10 ${theme.cardBg}`}
+                        >
+                          <span className="text-xs font-bold" style={{ color: contestant.color }}>#{idx + 1}</span>
+                        </div>
+                      </div>
+
+                      <h3 className="text-xl sm:text-2xl font-black uppercase mb-1">{contestant.name}</h3>
+                      <p className="text-white/40 text-xs font-medium uppercase tracking-wider mb-4">{contestant.role}</p>
+
+                      <div
+                        className="relative h-12 bg-white/5 rounded-xl overflow-hidden mb-4 cursor-pointer hover:bg-white/10 transition-colors"
+                        onClick={() => handleAction(`Voted for ${contestant.name}! 🔥`)}
+                      >
+                        <motion.div
+                          className="absolute inset-y-0 left-0 opacity-20"
+                          style={{ background: contestant.color }}
+                          animate={{ width: `${pct}%` }}
+                          transition={{ duration: 1, ease: "easeOut" }}
+                        />
+                        <div className="relative flex items-center justify-between px-4 h-full">
+                          <span className="font-bold text-sm">{labels.voteButton || "VOTE"}</span>
+                          <span className="font-mono font-bold" style={{ color: contestant.color }}>
+                            {pct}%
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* VS */}
+              <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-5xl font-black italic text-white/5 pointer-events-none select-none">
+                VS
+              </div>
             </div>
-            <h1 className="text-5xl md:text-7xl font-black mb-4 leading-tight">
-              Your Events.{" "}
-              <span
-                className={`bg-gradient-to-r ${theme.gradient} bg-clip-text text-transparent`}
-              >
-                Supercharged.
-              </span>
-            </h1>
-            <p className="text-xl max-w-2xl mx-auto mb-8 opacity-70">
-              EventOS turns your venue into a revenue machine. See the difference in real-time — watch these numbers climb.
-            </p>
-            <div className="flex flex-wrap gap-4 justify-center">
-              <button
-                onClick={() => setShowStore(true)}
-                className={`flex items-center gap-2 px-8 py-4 rounded-xl font-bold text-lg text-black bg-gradient-to-r ${theme.gradient} hover:opacity-90 transition-all active:scale-95`}
-              >
-                <Play className="w-5 h-5" />
-                Get EventOS Now
-              </button>
-              {onNavigate && (
-                <button
-                  onClick={() => onNavigate("booking")}
-                  className="flex items-center gap-2 px-8 py-4 rounded-xl font-bold text-lg transition-all hover:opacity-80"
-                  style={{ backgroundColor: "#ffffff11", color: theme.text }}
-                >
-                  Book a Demo <ArrowRight className="w-5 h-5" />
-                </button>
+          </div>
+
+          {/* 2. Live Stats + Chart */}
+          <div className={`md:col-span-4 rounded-3xl border border-white/10 backdrop-blur-xl p-5 transition-colors duration-500 ${theme.cardBg}`}>
+            <h3 className="text-sm font-bold text-white/60 uppercase tracking-wider mb-4">Live Activity</h3>
+            <div ref={chartContainerRef} className="w-full h-32 mb-4 min-w-0 overflow-hidden">
+              {chartWidth > 0 && (
+                <AreaChart width={chartWidth} height={128} data={hypeData}>
+                  <defs>
+                    <linearGradient id="colorHype" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor={theme.primary} stopOpacity={0.3} />
+                      <stop offset="95%" stopColor={theme.primary} stopOpacity={0} />
+                    </linearGradient>
+                  </defs>
+                  <Area
+                    type="monotone"
+                    dataKey="value"
+                    stroke={theme.primary}
+                    fillOpacity={1}
+                    fill="url(#colorHype)"
+                    strokeWidth={2}
+                    dot={false}
+                  />
+                  <YAxis hide domain={["dataMin", "dataMax"]} />
+                </AreaChart>
               )}
             </div>
-          </motion.div>
-        </section>
-
-        {/* Live Stats */}
-        <section>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {[
-              { label: "Live Tickets", value: liveTickets.toLocaleString(), icon: Users, suffix: "" },
-              { label: "Tonight's Revenue", value: "$" + (liveRevenue / 1000).toFixed(1) + "K", icon: DollarSign, suffix: "LIVE" },
-              { label: "Events This Month", value: "127", icon: BarChart2, suffix: "" },
-              { label: "Avg Rating", value: "4.9★", icon: Star, suffix: "" },
-            ].map((stat) => (
-              <motion.div
-                key={stat.label}
-                className="rounded-xl p-5 border relative overflow-hidden"
-                style={{ backgroundColor: theme.card, borderColor: theme.primary + "33" }}
-                animate={stat.suffix === "LIVE" ? { borderColor: [theme.primary + "33", theme.primary + "99", theme.primary + "33"] } : {}}
-                transition={{ duration: 2, repeat: Infinity }}
-              >
-                <div className="flex items-center justify-between mb-2">
-                  <stat.icon className="w-5 h-5 opacity-60" style={{ color: theme.primary }} />
-                  {stat.suffix && (
-                    <span className="text-xs font-bold px-2 py-0.5 rounded animate-pulse" style={{ backgroundColor: theme.primary, color: "#000" }}>
-                      {stat.suffix}
-                    </span>
-                  )}
-                </div>
-                <div className="text-2xl font-black" style={{ color: theme.text }}>{stat.value}</div>
-                <div className="text-xs opacity-50 mt-1">{stat.label}</div>
-              </motion.div>
-            ))}
-          </div>
-        </section>
-
-        {/* Battle: EventOS vs Manual */}
-        <section>
-          <div className="text-center mb-6">
-            <h2 className="text-3xl font-black mb-2">EventOS vs. Doing It Manually</h2>
-            <p className="opacity-60">The numbers don't lie</p>
-          </div>
-          <div className="rounded-2xl border overflow-hidden" style={{ backgroundColor: theme.card, borderColor: theme.primary + "33" }}>
-            <div className="grid grid-cols-3 text-center py-4 border-b" style={{ borderColor: theme.primary + "22" }}>
-              <div className="font-bold opacity-50">Manual</div>
-              <div className="font-bold" style={{ color: theme.primary }}>Metric</div>
-              <div className="font-bold" style={{ color: theme.primary }}>EventOS ⚡</div>
-            </div>
-            {battleMetrics.map((metric, i) => (
-              <motion.div
-                key={metric.label}
-                className="grid grid-cols-3 text-center py-4 border-b last:border-0 items-center"
-                style={{ borderColor: "#ffffff0a" }}
-                animate={{
-                  backgroundColor: i < battleStep ? theme.primary + "0a" : "transparent",
-                }}
-              >
-                <div className="text-sm opacity-50 line-through">{metric.manual}</div>
-                <div className="text-xs font-medium opacity-70">{metric.label}</div>
-                <div className="text-sm font-bold flex items-center justify-center gap-1" style={{ color: theme.primary }}>
-                  {metric.eventos}
-                  {i < battleStep && <CheckCircle className="w-4 h-4" />}
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </section>
-
-        {/* Charts Row */}
-        <section className="grid md:grid-cols-2 gap-6">
-          {/* Revenue Comparison */}
-          <div className="rounded-2xl p-6 border" style={{ backgroundColor: theme.card, borderColor: theme.primary + "33" }}>
-            <h3 className="font-bold mb-1">Revenue: Manual vs EventOS</h3>
-            <p className="text-xs opacity-50 mb-4">Same events, 3.9x more revenue</p>
-            <ResponsiveContainer width="100%" height={200}>
-              <AreaChart data={revenueData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#ffffff0a" />
-                <XAxis dataKey="month" tick={{ fill: "#ffffff55", fontSize: 11 }} axisLine={false} />
-                <YAxis tick={{ fill: "#ffffff55", fontSize: 11 }} axisLine={false} />
-                <Tooltip
-                  contentStyle={{ backgroundColor: theme.card, border: `1px solid ${theme.primary}33`, borderRadius: 8 }}
-                  labelStyle={{ color: theme.text }}
-                />
-                <Area type="monotone" dataKey="manual" stroke="#ffffff33" fill="#ffffff0a" name="Manual" />
-                <Area type="monotone" dataKey="eventos" stroke={theme.primary} fill={theme.primary + "33"} name="EventOS" />
-              </AreaChart>
-            </ResponsiveContainer>
-          </div>
-
-          {/* Ticket Velocity */}
-          <div className="rounded-2xl p-6 border" style={{ backgroundColor: theme.card, borderColor: theme.primary + "33" }}>
-            <h3 className="font-bold mb-1">Ticket Sales Velocity</h3>
-            <p className="text-xs opacity-50 mb-4">Tonight's event — selling faster than ever</p>
-            <ResponsiveContainer width="100%" height={200}>
-              <BarChart data={ticketData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#ffffff0a" />
-                <XAxis dataKey="time" tick={{ fill: "#ffffff55", fontSize: 11 }} axisLine={false} />
-                <YAxis tick={{ fill: "#ffffff55", fontSize: 11 }} axisLine={false} />
-                <Tooltip
-                  contentStyle={{ backgroundColor: theme.card, border: `1px solid ${theme.primary}33`, borderRadius: 8 }}
-                  labelStyle={{ color: theme.text }}
-                />
-                <Bar dataKey="sold" fill={theme.primary} name="Tickets Sold" radius={[4, 4, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </section>
-
-        {/* VIP Lounge */}
-        <section>
-          <div className="flex items-center gap-3 mb-6">
-            <Crown className="w-6 h-6" style={{ color: theme.primary }} />
-            <div>
-              <h2 className="text-2xl font-black">VIP Lounge</h2>
-              <p className="text-sm opacity-50">Real-time guest management dashboard</p>
-            </div>
-          </div>
-          <div className="rounded-2xl border overflow-hidden" style={{ backgroundColor: theme.card, borderColor: theme.primary + "33" }}>
-            <div className="grid grid-cols-5 text-xs font-bold uppercase opacity-50 px-6 py-3 border-b" style={{ borderColor: "#ffffff0a" }}>
-              <span>Guest</span><span>Tier</span><span>Tonight's Spend</span><span>Table</span><span>Status</span>
-            </div>
-            {vipGuests.map((guest) => (
-              <div key={guest.name} className="grid grid-cols-5 px-6 py-4 border-b items-center hover:bg-white/5 transition-colors" style={{ borderColor: "#ffffff08" }}>
-                <span className="font-medium">{guest.name}</span>
-                <span
-                  className="text-xs px-2 py-0.5 rounded-full font-bold w-fit"
-                  style={{
-                    backgroundColor:
-                      guest.tier === "Diamond" ? "#60A5FA22" :
-                      guest.tier === "Platinum" ? "#A78BFA22" : "#FCD34D22",
-                    color:
-                      guest.tier === "Diamond" ? "#60A5FA" :
-                      guest.tier === "Platinum" ? "#A78BFA" : "#FCD34D",
-                  }}
-                >
-                  {guest.tier}
-                </span>
-                <span className="font-bold" style={{ color: theme.primary }}>{guest.spend}</span>
-                <span className="text-sm opacity-70">{guest.table}</span>
-                <span
-                  className="text-xs px-2 py-0.5 rounded-full w-fit font-medium"
-                  style={{
-                    backgroundColor:
-                      guest.status === "arrived" ? "#22C55E22" :
-                      guest.status === "en-route" ? "#F59E0B22" : "#6B728022",
-                    color:
-                      guest.status === "arrived" ? "#22C55E" :
-                      guest.status === "en-route" ? "#F59E0B" : "#9CA3AF",
-                  }}
-                >
-                  {guest.status}
-                </span>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Features Grid */}
-        <section>
-          <div className="text-center mb-8">
-            <h2 className="text-3xl font-black mb-2">Everything You Need</h2>
-            <p className="opacity-60">One platform to run your entire event operation</p>
-          </div>
-          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
-            {features.map((f) => (
-              <motion.div
-                key={f.title}
-                whileHover={{ scale: 1.02 }}
-                className="rounded-xl p-6 border cursor-pointer transition-colors"
-                style={{ backgroundColor: theme.card, borderColor: theme.primary + "22" }}
-              >
-                <f.icon className="w-8 h-8 mb-3" style={{ color: theme.primary }} />
-                <h3 className="font-bold mb-1">{f.title}</h3>
-                <p className="text-sm opacity-60">{f.desc}</p>
-              </motion.div>
-            ))}
-          </div>
-        </section>
-
-        {/* Guest Satisfaction */}
-        <section className="grid md:grid-cols-2 gap-6 items-center">
-          <div>
-            <h2 className="text-3xl font-black mb-4">Guest Satisfaction</h2>
-            <p className="opacity-60 mb-6">
-              EventOS doesn't just manage your event — it makes your guests love it. Seamless entry, instant updates, and personalized experiences.
-            </p>
-            <div className="space-y-3">
-              {satisfactionData.map((item) => (
-                <div key={item.name} className="flex items-center gap-3">
-                  <span className="text-sm w-20 opacity-70">{item.name}</span>
-                  <div className="flex-1 rounded-full h-2" style={{ backgroundColor: "#ffffff11" }}>
-                    <motion.div
-                      className="h-2 rounded-full"
-                      style={{ backgroundColor: item.color }}
-                      initial={{ width: 0 }}
-                      animate={{ width: `${item.value}%` }}
-                      transition={{ duration: 1, delay: 0.3 }}
-                    />
+            <div className="grid grid-cols-1 gap-3">
+              {liveStats.map((stat) => (
+                <div key={stat.label} className="p-3 rounded-xl bg-white/5 border border-white/5 flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: `${stat.color}22` }}>
+                    <stat.icon size={14} style={{ color: stat.color }} />
                   </div>
-                  <span className="text-sm font-bold w-10 text-right">{item.value}%</span>
+                  <div>
+                    <div className="text-[10px] font-bold uppercase text-white/40">{stat.label}</div>
+                    <div className="font-bold text-sm">{stat.value}</div>
+                  </div>
                 </div>
               ))}
             </div>
           </div>
-          <div className="rounded-2xl p-6 border" style={{ backgroundColor: theme.card, borderColor: theme.primary + "33" }}>
-            <ResponsiveContainer width="100%" height={220}>
-              <PieChart>
-                <Pie
-                  data={satisfactionData}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={55}
-                  outerRadius={85}
-                  dataKey="value"
+
+          {/* 3. Requests */}
+          <div className={`md:col-span-4 rounded-3xl border border-white/10 p-5 transition-colors duration-500 ${theme.cardBg}`}>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-sm font-bold text-white/60 uppercase tracking-wider">{labels.requestTitle}</h3>
+              <MessageSquare size={14} className="text-white/30" />
+            </div>
+            <div className="space-y-3">
+              {requests.map((req) => (
+                <div
+                  key={req.id}
+                  className="flex items-center gap-3 p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors cursor-pointer"
+                  onClick={() => handleAction(`Upvoted: ${req.song} 🎵`)}
                 >
-                  {satisfactionData.map((entry, index) => (
-                    <Cell key={index} fill={entry.color} />
-                  ))}
-                </Pie>
-                <Tooltip
-                  contentStyle={{ backgroundColor: theme.card, border: `1px solid ${theme.primary}33`, borderRadius: 8 }}
-                />
-              </PieChart>
-            </ResponsiveContainer>
-            <div className="text-center -mt-2">
-              <div className="text-4xl font-black" style={{ color: theme.primary }}>90%</div>
-              <div className="text-sm opacity-60">Excellent + Good ratings</div>
+                  <div className="text-center min-w-8">
+                    <div className="text-xs font-bold" style={{ color: theme.primary }}>{req.votes}</div>
+                    <div className="text-[9px] text-white/30">votes</div>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="font-bold text-sm truncate">{req.song}</div>
+                    <div className="text-white/40 text-xs truncate">{req.artist} · {req.user}</div>
+                  </div>
+                  <TrendingUp size={12} className="text-white/20 flex-shrink-0" />
+                </div>
+              ))}
+            </div>
+            <button
+              className="w-full mt-4 py-2.5 rounded-xl text-xs font-bold border border-white/10 text-white/50 hover:text-white hover:border-white/30 transition-all"
+              onClick={() => handleAction("Request submitted! 🎶")}
+            >
+              + Submit Request
+            </button>
+          </div>
+
+          {/* 4. VIP Lounge */}
+          <div className={`md:col-span-8 rounded-3xl border border-white/10 p-5 transition-colors duration-500 ${theme.cardBg}`}>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-sm font-bold text-white/60 uppercase tracking-wider flex items-center gap-2">
+                <Crown size={14} style={{ color: theme.primary }} />
+                {labels.vipTitle}
+              </h3>
+              <span className="text-xs px-2 py-0.5 rounded-full font-bold" style={{ backgroundColor: `${theme.primary}22`, color: theme.primary }}>
+                {vipUsers.length} online
+              </span>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              {vipUsers.map((user) => (
+                <div
+                  key={user.id}
+                  className="p-3 rounded-xl bg-white/5 border border-white/5 hover:border-white/20 transition-all cursor-pointer text-center"
+                  onClick={() => handleAction(`Sent message to ${user.name}`)}
+                >
+                  <div className="relative mx-auto w-12 h-12 mb-2">
+                    <img src={user.img} alt={user.name} className="w-12 h-12 rounded-full object-cover" />
+                    <span className="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-green-400 border-2 border-black" />
+                  </div>
+                  <div className="font-bold text-xs truncate">{user.name}</div>
+                  <div className="text-white/40 text-[10px] truncate">{user.role}</div>
+                  <div
+                    className="mt-1.5 text-[9px] px-2 py-0.5 rounded-full font-bold mx-auto w-fit"
+                    style={{ backgroundColor: `${theme.primary}22`, color: theme.primary }}
+                  >
+                    {user.status}
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
-        </section>
 
-        {/* CTA */}
-        <section
-          className="rounded-3xl p-12 text-center border"
-          style={{ backgroundColor: theme.card, borderColor: theme.primary + "44" }}
-        >
-          <div
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold mb-6"
-            style={{ backgroundColor: theme.primary + "20", color: theme.primary }}
-          >
-            <Lock className="w-4 h-4" />
-            Limited availability — serious venues only
-          </div>
-          <h2 className="text-4xl md:text-5xl font-black mb-4">
-            Ready to 4x Your{" "}
-            <span className={`bg-gradient-to-r ${theme.gradient} bg-clip-text text-transparent`}>
-              Event Revenue?
-            </span>
-          </h2>
-          <p className="text-lg opacity-70 mb-8 max-w-xl mx-auto">
-            Join 200+ venues using EventOS. Get set up in 2 hours, not 2 days.
-          </p>
-          <div className="flex flex-wrap gap-4 justify-center">
+          {/* 5. Store Preview */}
+          <div className={`md:col-span-4 rounded-3xl border border-white/10 p-5 transition-colors duration-500 ${theme.cardBg}`}>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-sm font-bold text-white/60 uppercase tracking-wider">{labels.storeTitle}</h3>
+              <Star size={14} className="text-white/30" />
+            </div>
+            <div className="space-y-2">
+              {storeItems.map((item) => (
+                <div
+                  key={item.id}
+                  className="flex items-center gap-3 p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors cursor-pointer"
+                  onClick={() => setShowStoreModal(true)}
+                >
+                  <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style={{ backgroundColor: `${item.color}22` }}>
+                    <item.icon size={14} style={{ color: item.color }} />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-1">
+                      <span className="font-bold text-xs truncate">{item.name}</span>
+                      {item.popular && (
+                        <span className="text-[9px] px-1.5 rounded font-bold" style={{ backgroundColor: `${theme.primary}33`, color: theme.primary }}>
+                          HOT
+                        </span>
+                      )}
+                    </div>
+                    <div className="text-white/40 text-[10px]">{item.desc}</div>
+                  </div>
+                  <div className="font-bold text-sm" style={{ color: theme.primary }}>${item.price}</div>
+                </div>
+              ))}
+            </div>
             <button
-              onClick={() => setShowStore(true)}
-              className={`flex items-center gap-2 px-10 py-4 rounded-xl font-black text-xl text-black bg-gradient-to-r ${theme.gradient} hover:opacity-90 transition-all active:scale-95`}
+              onClick={() => setShowStoreModal(true)}
+              className="w-full mt-4 py-2.5 rounded-xl text-xs font-bold transition-all"
+              style={{ backgroundColor: `${theme.primary}22`, color: theme.primary }}
             >
-              Get EventOS <ArrowRight className="w-6 h-6" />
+              View Full Store →
             </button>
-            {onNavigate && (
-              <button
-                onClick={() => onNavigate("booking")}
-                className="flex items-center gap-2 px-8 py-4 rounded-xl font-bold text-lg transition-all hover:opacity-80"
-                style={{ backgroundColor: "#ffffff11", color: theme.text }}
-              >
-                Book Free Consultation
-              </button>
-            )}
           </div>
-          <p className="mt-4 text-sm opacity-40">No contracts. Cancel anytime. Results in first event.</p>
-        </section>
-      </div>
 
+          {/* 6. CTA Banner */}
+          <div
+            className="md:col-span-8 rounded-3xl p-6 relative overflow-hidden border border-white/10"
+            style={{ background: `linear-gradient(135deg, ${theme.primary}22, ${theme.secondary}11)` }}
+          >
+            <div className="relative z-10">
+              <h2 className="text-2xl font-black mb-1">
+                Ready to run <span style={{ color: theme.primary }}>your own event</span> on EventOS?
+              </h2>
+              <p className="text-white/60 text-sm mb-4">Set up in 2 hours. First event free consultation.</p>
+              <div className="flex flex-wrap gap-3">
+                <button
+                  onClick={() => handleGetStarted("EventOS Premium")}
+                  className="flex items-center gap-2 px-6 py-3 rounded-xl font-black text-black text-sm transition-all hover:opacity-90 active:scale-95"
+                  style={{ backgroundColor: theme.primary }}
+                >
+                  Get EventOS <ArrowRight size={16} />
+                </button>
+                <button
+                  onClick={() => handleGetStarted()}
+                  className="flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-sm border border-white/20 hover:bg-white/10 transition-all"
+                >
+                  Book Free Demo
+                </button>
+              </div>
+            </div>
+            <div className="absolute right-6 top-1/2 -translate-y-1/2 text-8xl opacity-10 font-black italic select-none hidden md:block">
+              OS
+            </div>
+          </div>
+
+        </div>
+      </main>
+
+      {/* Store Modal */}
       <AnimatePresence>
-        {showStore && (
-          <StorePanel
-            theme={theme}
-            onClose={() => setShowStore(false)}
-            onBook={handleGetEventOS}
-          />
+        {showStoreModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4"
+            style={{ backgroundColor: "rgba(0,0,0,0.85)" }}
+            onClick={(e) => e.target === e.currentTarget && setShowStoreModal(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.9, y: 20 }}
+              className={`relative w-full max-w-lg rounded-3xl p-7 border border-white/10 ${theme.cardBg}`}
+            >
+              <button
+                onClick={() => setShowStoreModal(false)}
+                className="absolute top-5 right-5 p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
+              >
+                <X size={16} />
+              </button>
+
+              <h2 className="text-2xl font-black mb-1">{labels.storeTitle}</h2>
+              <p className="text-white/50 text-sm mb-6">Power up your experience</p>
+
+              <div className="space-y-3 mb-6">
+                {storeItems.map((item) => (
+                  <div
+                    key={item.id}
+                    className="flex items-center gap-4 p-4 rounded-2xl border transition-all"
+                    style={{
+                      backgroundColor: `${item.color}0a`,
+                      borderColor: item.popular ? `${item.color}44` : "transparent",
+                    }}
+                  >
+                    <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: `${item.color}22` }}>
+                      <item.icon size={20} style={{ color: item.color }} />
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold">{item.name}</span>
+                        {item.popular && (
+                          <span className="text-[10px] px-2 rounded font-bold" style={{ backgroundColor: theme.primary, color: "#000" }}>
+                            POPULAR
+                          </span>
+                        )}
+                      </div>
+                      <div className="text-white/50 text-xs">{item.desc}</div>
+                    </div>
+                    <button
+                      onClick={() => handlePurchase(item.id, item.name)}
+                      disabled={purchasedItems[item.id]}
+                      className="flex items-center gap-1.5 px-4 py-2 rounded-xl font-bold text-sm transition-all"
+                      style={{
+                        backgroundColor: purchasedItems[item.id] ? "#22C55E" : item.color,
+                        color: purchasedItems[item.id] ? "#fff" : "#000",
+                        opacity: purchasedItems[item.id] ? 0.8 : 1,
+                      }}
+                    >
+                      {purchasedItems[item.id] ? <Check size={14} /> : null}
+                      {purchasedItems[item.id] ? "Done" : `$${item.price}`}
+                    </button>
+                  </div>
+                ))}
+              </div>
+
+              <div className="border-t border-white/10 pt-5">
+                <p className="text-white/40 text-xs text-center mb-4">
+                  Want your own event on EventOS?
+                </p>
+                <button
+                  onClick={() => handleGetStarted("EventOS Premium")}
+                  className="w-full py-3.5 rounded-xl font-black text-black transition-all hover:opacity-90"
+                  style={{ backgroundColor: theme.primary }}
+                >
+                  Get EventOS for Your Venue →
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Notification Toast */}
+      <AnimatePresence>
+        {notification && (
+          <motion.div
+            initial={{ opacity: 0, y: 20, x: "-50%" }}
+            animate={{ opacity: 1, y: 0, x: "-50%" }}
+            exit={{ opacity: 0, y: 20, x: "-50%" }}
+            className="fixed bottom-6 left-1/2 z-50 px-5 py-3 rounded-2xl text-sm font-bold shadow-2xl border border-white/10"
+            style={{ backgroundColor: theme.cardBg === "bg-[#111]" ? "#1a1a1a" : theme.cardBg === "bg-[#1a2236]" ? "#1a2236" : "#2a2a2a" }}
+          >
+            <span style={{ color: theme.primary }}>{notification}</span>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Marquee keyframes */}
+      <style>{`
+        @keyframes marquee {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
+        .animate-marquee {
+          animation: marquee 30s linear infinite;
+          display: flex;
+          width: max-content;
+        }
+      `}</style>
     </div>
   );
 }

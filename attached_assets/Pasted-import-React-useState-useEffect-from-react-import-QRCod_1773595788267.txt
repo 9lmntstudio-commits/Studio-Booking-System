@@ -1,0 +1,274 @@
+import React, { useState, useEffect } from 'react';
+import { QRCodeSVG } from 'qrcode.react';
+import { Smartphone, Users, DollarSign, Settings, Activity, Shield, Zap } from 'lucide-react';
+
+interface EventOSAutomationProps {
+  eventId: string;
+  eventName: string;
+  eventType: 'wedding' | 'pitch-battle' | 'fashion' | 'corporate' | 'sports';
+  attendeeCount: number;
+}
+
+export function EventOSAutomation({ eventId, eventName, eventType, attendeeCount }: EventOSAutomationProps) {
+  const [qrCode, setQrCode] = useState('');
+  const [mobileData, setMobileData] = useState({
+    enabled: false,
+    dataUsage: '0 MB',
+    optimization: 'balanced'
+  });
+  const [automation, setAutomation] = useState({
+    salesTeam: true,
+    aiAssistant: true,
+    bugDetection: true,
+    performance: 'optimal'
+  });
+
+  useEffect(() => {
+    // Generate QR code for event access
+    const eventUrl = `https://9lmnts.com/event-os/${eventType}/${eventId}`;
+    setQrCode(eventUrl);
+
+    // Simulate mobile data optimization
+    const dataUsage = Math.max(50, attendeeCount * 0.5);
+    setMobileData(prev => ({
+      ...prev,
+      dataUsage: `${dataUsage.toFixed(1)} MB`,
+      enabled: true
+    }));
+  }, [eventId, eventType, attendeeCount]);
+
+  const toggleMobileData = () => {
+    setMobileData(prev => ({
+      ...prev,
+      optimization: prev.optimization === 'balanced' ? 'high-performance' : 'balanced'
+    }));
+  };
+
+  const toggleAutomation = (feature: string) => {
+    setAutomation(prev => ({
+      ...prev,
+      [feature]: !prev[feature as keyof typeof prev]
+    }));
+  };
+
+  const getEventTypeIcon = () => {
+    switch (eventType) {
+      case 'wedding': return '💒';
+      case 'pitch-battle': return '🚀';
+      case 'fashion': return '👗';
+      case 'corporate': return '💼';
+      case 'sports': return '⚽';
+      default: return '🎯';
+    }
+  };
+
+  const getPotentialRevenue = () => {
+    const baseRevenue = {
+      wedding: { min: 7750, max: 31250 },
+      'pitch-battle': { min: 10000, max: 55000 },
+      fashion: { min: 45000, max: 135000 },
+      corporate: { min: 55000, max: 165000 },
+      sports: { min: 60000, max: 250000 }
+    };
+    return baseRevenue[eventType] || { min: 0, max: 0 };
+  };
+
+  const revenue = getPotentialRevenue();
+
+  return (
+    <div className="min-h-screen bg-[#1A1A1A] p-6">
+      <div className="max-w-6xl mx-auto">
+        {/* Header */}
+        <div className="bg-[#FF7A00]/10 border border-[#FF7A00]/20 rounded-lg p-6 mb-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-white mb-2">
+                {getEventTypeIcon()} {eventName} - EventOS Automation
+              </h1>
+              <p className="text-gray-400">
+                AI-Powered Event Management & Monetization Platform
+              </p>
+            </div>
+            <div className="text-right">
+              <div className="text-2xl font-bold text-[#FF7A00]">
+                {attendeeCount}+ Attendees
+              </div>
+              <div className="text-sm text-gray-400">
+                Live Event Status
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* QR Code Access */}
+          <div className="bg-[#222222] border border-[#FF7A00]/20 rounded-lg p-6">
+            <div className="flex items-center mb-4">
+              <Smartphone className="w-6 h-6 text-[#FF7A00] mr-3" />
+              <h2 className="text-xl font-bold text-white">QR Code Access</h2>
+            </div>
+            <div className="bg-white p-4 rounded-lg mb-4 flex justify-center">
+              {qrCode && <QRCodeSVG value={qrCode} size={200} />}
+            </div>
+            <p className="text-gray-400 text-sm mb-4">
+              Attendees scan QR code with mobile device for instant event access
+            </p>
+            <div className="bg-[#FF7A00]/10 border border-[#FF7A00]/20 rounded p-3">
+              <p className="text-xs text-[#FF7A00] font-mono">
+                https://9lmnts.com/event-os/{eventType}/{eventId}
+              </p>
+            </div>
+          </div>
+
+          {/* Mobile Data Optimization */}
+          <div className="bg-[#222222] border border-[#FF7A00]/20 rounded-lg p-6">
+            <div className="flex items-center mb-4">
+              <Activity className="w-6 h-6 text-[#FF7A00] mr-3" />
+              <h2 className="text-xl font-bold text-white">Mobile Data</h2>
+            </div>
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <span className="text-gray-400">Data Usage:</span>
+                <span className="text-white font-bold">{mobileData.dataUsage}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-gray-400">Optimization:</span>
+                <span className="text-white font-bold">{mobileData.optimization}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-gray-400">Status:</span>
+                <span className={`px-2 py-1 rounded text-xs font-bold ${
+                  mobileData.enabled ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
+                }`}>
+                  {mobileData.enabled ? 'OPTIMIZED' : 'DISABLED'}
+                </span>
+              </div>
+              <button
+                onClick={toggleMobileData}
+                className="w-full mt-4 bg-[#FF7A00] text-white py-2 px-4 rounded hover:bg-[#FF7A00]/90 transition-colors"
+              >
+                Toggle Optimization Mode
+              </button>
+            </div>
+          </div>
+
+          {/* Revenue Potential */}
+          <div className="bg-[#222222] border border-[#FF7A00]/20 rounded-lg p-6">
+            <div className="flex items-center mb-4">
+              <DollarSign className="w-6 h-6 text-[#FF7A00] mr-3" />
+              <h2 className="text-xl font-bold text-white">Revenue Potential</h2>
+            </div>
+            <div className="space-y-4">
+              <div className="bg-[#FF7A00]/10 border border-[#FF7A00]/20 rounded p-4">
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-[#FF7A00]">
+                    ${revenue.min.toLocaleString()}
+                  </div>
+                  <div className="text-sm text-gray-400">Minimum Revenue</div>
+                </div>
+              </div>
+              <div className="bg-[#FF7A00]/10 border border-[#FF7A00]/20 rounded p-4">
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-[#FF7A00]">
+                    ${revenue.max.toLocaleString()}
+                  </div>
+                  <div className="text-sm text-gray-400">Maximum Revenue</div>
+                </div>
+              </div>
+              <div className="mt-4 p-3 bg-green-500/10 border border-green-500/20 rounded">
+                <div className="text-center text-green-400 font-bold">
+                  ROI: {Math.round((revenue.max / 5000) * 100)}% return on investment
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* AI Automation Controls */}
+        <div className="mt-6 bg-[#222222] border border-[#FF7A00]/20 rounded-lg p-6">
+          <div className="flex items-center mb-6">
+            <Zap className="w-6 h-6 text-[#FF7A00] mr-3" />
+            <h2 className="text-xl font-bold text-white">AI Automation Controls</h2>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <button
+              onClick={() => toggleAutomation('salesTeam')}
+              className={`p-4 rounded-lg border transition-colors ${
+                automation.salesTeam 
+                  ? 'bg-[#FF7A00] border-[#FF7A00] text-white' 
+                  : 'bg-[#222222] border-gray-600 text-gray-400 hover:border-[#FF7A00] hover:text-[#FF7A00]'
+              }`}
+            >
+              <Users className="w-6 h-6 mb-2" />
+              <div className="text-sm font-bold">Sales Team</div>
+              <div className="text-xs">
+                {automation.salesTeam ? 'ACTIVE' : 'INACTIVE'}
+              </div>
+            </button>
+
+            <button
+              onClick={() => toggleAutomation('aiAssistant')}
+              className={`p-4 rounded-lg border transition-colors ${
+                automation.aiAssistant 
+                  ? 'bg-[#FF7A00] border-[#FF7A00] text-white' 
+                  : 'bg-[#222222] border-gray-600 text-gray-400 hover:border-[#FF7A00] hover:text-[#FF7A00]'
+              }`}
+            >
+              <Settings className="w-6 h-6 mb-2" />
+              <div className="text-sm font-bold">AI Assistant</div>
+              <div className="text-xs">
+                {automation.aiAssistant ? 'ACTIVE' : 'INACTIVE'}
+              </div>
+            </button>
+
+            <button
+              onClick={() => toggleAutomation('bugDetection')}
+              className={`p-4 rounded-lg border transition-colors ${
+                automation.bugDetection 
+                  ? 'bg-[#FF7A00] border-[#FF7A00] text-white' 
+                  : 'bg-[#222222] border-gray-600 text-gray-400 hover:border-[#FF7A00] hover:text-[#FF7A00]'
+              }`}
+            >
+              <Shield className="w-6 h-6 mb-2" />
+              <div className="text-sm font-bold">Bug Detection</div>
+              <div className="text-xs">
+                {automation.bugDetection ? 'ACTIVE' : 'INACTIVE'}
+              </div>
+            </button>
+
+            <div className="p-4 rounded-lg border border-green-500 bg-green-500/10">
+              <div className="text-green-400 font-bold">System Performance</div>
+              <div className="text-2xl font-bold text-green-400">{automation.performance}</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Event Status Dashboard */}
+        <div className="mt-6 bg-[#222222] border border-[#FF7A00]/20 rounded-lg p-6">
+          <h2 className="text-xl font-bold text-white mb-4">Live Event Dashboard</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="bg-[#FF7A00]/10 border border-[#FF7A00]/20 rounded p-4">
+              <div className="text-center">
+                <div className="text-2xl font-bold text-[#FF7A00]">100%</div>
+                <div className="text-sm text-gray-400">System Uptime</div>
+              </div>
+            </div>
+            <div className="bg-[#FF7A00]/10 border border-[#FF7A00]/20 rounded p-4">
+              <div className="text-center">
+                <div className="text-2xl font-bold text-[#FF7A00]">0</div>
+                <div className="text-sm text-gray-400">Active Issues</div>
+              </div>
+            </div>
+            <div className="bg-[#FF7A00]/10 border border-[#FF7A00]/20 rounded p-4">
+              <div className="text-center">
+                <div className="text-2xl font-bold text-[#FF7A00]">Excellent</div>
+                <div className="text-sm text-gray-400">Performance Rating</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
