@@ -45,6 +45,12 @@ import {
   Wine,
   Mic,
   Heart,
+  ThumbsUp,
+  Cake,
+  Send,
+  HelpCircle,
+  Radio,
+  ChevronUp,
 } from "lucide-react";
 import {
   SOUND_CLASH_DATA,
@@ -305,6 +311,57 @@ export default function EventOSDemo({ onNavigate }: EventOSDemoProps) {
   // Flash sale
   const [flashSecondsLeft, setFlashSecondsLeft] = useState(847);
   const [flashClaimed, setFlashClaimed] = useState(false);
+
+  // Live Interaction Hub
+  type QAItem = { id: number; text: string; from: string; votes: number; answered: boolean; answer: string; featured: boolean };
+  type BdItem = { id: number; name: string; message: string; from: string; emoji: string; featured: boolean };
+  type ReqItem = { id: number; song: string; artist: string; from: string; votes: number; status: "requested" | "playing" | "played" };
+
+  const [interactTab, setInteractTab] = useState<"qa" | "requests" | "birthdays">("qa");
+  const [interactInput, setInteractInput] = useState("");
+  const [interactName, setInteractName] = useState("");
+  const [qaVoted, setQaVoted] = useState<Set<number>>(new Set());
+  const [bdVoted, setBdVoted] = useState<Set<number>>(new Set());
+  const [reqVoted, setReqVoted] = useState<Set<number>>(new Set());
+
+  const [qaItems, setQaItems] = useState<QAItem[]>([
+    { id: 1, text: "How do I upgrade to a VIP table right now?", from: "Table 5", votes: 24, answered: true, answer: "Tap 'VIP Upgrade' in the app or see our host near the bar — we have 2 tables left!", featured: true },
+    { id: 2, text: "Will there be a second round of the battle?", from: "Anonymous", votes: 17, answered: false, answer: "", featured: false },
+    { id: 3, text: "Can I get a table extension past 2AM?", from: "Sarah K.", votes: 9, answered: false, answer: "", featured: false },
+    { id: 4, text: "Is the DJ taking requests all night?", from: "Marcus J.", votes: 6, answered: false, answer: "", featured: false },
+  ]);
+
+  const [bdItems, setBdItems] = useState<BdItem[]>([
+    { id: 1, name: "MARCUS", message: "Happy birthday king! Tonight is your night — we love you! 🎉", from: "The Squad", emoji: "🎂", featured: true },
+    { id: 2, name: "JADE", message: "21 and absolutely killing it! You're unstoppable sis 💜", from: "Family ❤️", emoji: "🎉", featured: false },
+    { id: 3, name: "TYRESE", message: "My guy finally legal! The drinks are on me tonight 🥂", from: "Bros 🤝", emoji: "🥂", featured: false },
+  ]);
+
+  const [liveReqs, setLiveReqs] = useState<ReqItem[]>([
+    { id: 1, song: "Big Energy", artist: "Latto", from: "Table 3", votes: 31, status: "playing" },
+    { id: 2, song: "Essence", artist: "Wizkid ft. Tems", from: "VIP Booth", votes: 28, status: "requested" },
+    { id: 3, song: "Calm Down", artist: "Rema & Selena Gomez", from: "Sarah K.", votes: 19, status: "requested" },
+    { id: 4, song: "CUFF IT", artist: "Beyoncé", from: "Table 12", votes: 14, status: "requested" },
+  ]);
+
+  const submitInteract = () => {
+    if (!interactInput.trim()) return;
+    const from = interactName.trim() || "Anonymous";
+    if (interactTab === "qa") {
+      setQaItems((p) => [{ id: Date.now(), text: interactInput, from, votes: 1, answered: false, answer: "", featured: false }, ...p]);
+      notify(`❓ Your question is live!`);
+    } else if (interactTab === "birthdays") {
+      const parts = interactInput.split(" for ").map((s) => s.trim());
+      setBdItems((p) => [{ id: Date.now(), name: (parts[1] || "SOMEONE").toUpperCase(), message: parts[0], from, emoji: "🎂", featured: false }, ...p]);
+      notify(`🎂 Birthday wish sent!`);
+    } else {
+      const parts = interactInput.split(" by ").map((s) => s.trim());
+      setLiveReqs((p) => [{ id: Date.now(), song: parts[0], artist: parts[1] || "Unknown", from, votes: 1, status: "requested" }, ...p]);
+      notify(`🎵 Song request added to the queue!`);
+    }
+    setInteractInput("");
+    setInteractName("");
+  };
 
   // Misc UI state
   const [showStore, setShowStore] = useState(false);
@@ -894,6 +951,249 @@ export default function EventOSDemo({ onNavigate }: EventOSDemoProps) {
                     <div className="text-[10px] text-white/40">{s.label}</div>
                   </div>
                 ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ── Live Interaction Hub ──────────────────────────────────────────── */}
+        <section>
+          {/* Header */}
+          <div className="flex flex-wrap items-start justify-between gap-4 mb-6">
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <Radio className="w-3 h-3 animate-pulse" style={{ color: primary }} />
+                <span className="text-xs font-black uppercase tracking-widest" style={{ color: primary }}>Live Audience Interaction</span>
+              </div>
+              <h2 className="text-2xl sm:text-3xl font-black">Q&amp;A · Requests · Birthdays</h2>
+              <p className="text-white/50 text-sm mt-1">Real-time guest engagement — every voice heard, every moment celebrated</p>
+            </div>
+            <div className="flex gap-2">
+              {[
+                { key: "qa", icon: HelpCircle, label: "Q&A", count: qaItems.length },
+                { key: "requests", icon: Music, label: "Requests", count: liveReqs.length },
+                { key: "birthdays", icon: Cake, label: "Birthdays 🎂", count: bdItems.length },
+              ].map((tab) => (
+                <button
+                  key={tab.key}
+                  onClick={() => setInteractTab(tab.key as typeof interactTab)}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all border"
+                  style={{
+                    backgroundColor: interactTab === tab.key ? `${primary}22` : "transparent",
+                    borderColor: interactTab === tab.key ? primary : "#333",
+                    color: interactTab === tab.key ? primary : "#666",
+                  }}
+                >
+                  <tab.icon size={12} />
+                  <span className="hidden sm:inline">{tab.label}</span>
+                  <span className="sm:hidden">{tab.key === "birthdays" ? "🎂" : tab.label}</span>
+                  <span className="w-4 h-4 rounded-full text-[9px] flex items-center justify-center font-black" style={{ backgroundColor: `${primary}33` }}>{tab.count}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-4">
+            {/* Left: Feed */}
+            <div className="rounded-2xl border border-white/10 overflow-hidden" style={{ backgroundColor: "#111" }}>
+              <div className="flex items-center justify-between px-4 py-3 border-b border-white/5">
+                <span className="text-xs font-bold text-white/50 uppercase tracking-wider">
+                  {interactTab === "qa" ? "Questions" : interactTab === "requests" ? "Song Queue" : "Celebration Wall"}
+                </span>
+                <span className="text-xs px-2 py-0.5 rounded-full font-bold animate-pulse" style={{ backgroundColor: `${primary}22`, color: primary }}>LIVE</span>
+              </div>
+
+              <div className="divide-y divide-white/5 max-h-80 overflow-y-auto">
+                <AnimatePresence mode="popLayout">
+
+                  {/* ── Q&A Tab ── */}
+                  {interactTab === "qa" && qaItems.map((q) => (
+                    <motion.div
+                      key={q.id}
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, x: -20 }}
+                      className="p-4"
+                    >
+                      {q.featured && (
+                        <div className="flex items-center gap-1.5 mb-2">
+                          <span className="text-[10px] font-black px-2 py-0.5 rounded-full" style={{ backgroundColor: `${primary}22`, color: primary }}>⭐ FEATURED</span>
+                        </div>
+                      )}
+                      <div className="flex items-start gap-3">
+                        <button
+                          onClick={() => {
+                            if (qaVoted.has(q.id)) return;
+                            setQaVoted((p) => new Set([...p, q.id]));
+                            setQaItems((p) => p.map((x) => x.id === q.id ? { ...x, votes: x.votes + 1 } : x));
+                          }}
+                          className="flex flex-col items-center gap-0.5 flex-shrink-0 pt-0.5"
+                        >
+                          <ChevronUp size={14} style={{ color: qaVoted.has(q.id) ? primary : "#666" }} />
+                          <span className="text-xs font-black" style={{ color: qaVoted.has(q.id) ? primary : "#666" }}>{q.votes}</span>
+                        </button>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium leading-snug">{q.text}</p>
+                          <p className="text-xs text-white/40 mt-0.5">from {q.from}</p>
+                          {q.answered && (
+                            <div className="mt-2 px-3 py-2 rounded-xl text-xs leading-snug" style={{ backgroundColor: `${primary}15`, color: primary }}>
+                              <span className="font-black">Host: </span>{q.answer}
+                            </div>
+                          )}
+                        </div>
+                        {q.answered && <span className="text-[10px] px-1.5 py-0.5 rounded font-bold text-green-400 bg-green-400/10 flex-shrink-0">✓ Answered</span>}
+                      </div>
+                    </motion.div>
+                  ))}
+
+                  {/* ── Requests Tab ── */}
+                  {interactTab === "requests" && liveReqs.map((r) => (
+                    <motion.div
+                      key={r.id}
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, x: -20 }}
+                      className="p-4 flex items-center gap-3"
+                    >
+                      <button
+                        onClick={() => {
+                          if (reqVoted.has(r.id)) return;
+                          setReqVoted((p) => new Set([...p, r.id]));
+                          setLiveReqs((p) => p.map((x) => x.id === r.id ? { ...x, votes: x.votes + 1 } : x));
+                        }}
+                        className="flex flex-col items-center gap-0.5 flex-shrink-0"
+                      >
+                        <ChevronUp size={14} style={{ color: reqVoted.has(r.id) ? primary : "#666" }} />
+                        <span className="text-xs font-black" style={{ color: reqVoted.has(r.id) ? primary : "#666" }}>{r.votes}</span>
+                      </button>
+                      <div className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0" style={{ backgroundColor: r.status === "playing" ? `${primary}22` : "#ffffff0a" }}>
+                        {r.status === "playing" ? <Mic size={14} style={{ color: primary }} /> : <Music size={14} className="text-white/40" />}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="text-sm font-black truncate">{r.song}</div>
+                        <div className="text-xs text-white/40 truncate">{r.artist} · from {r.from}</div>
+                      </div>
+                      <span className="text-[10px] px-2 py-0.5 rounded-full font-bold flex-shrink-0"
+                        style={{
+                          backgroundColor: r.status === "playing" ? `${primary}22` : "#ffffff0a",
+                          color: r.status === "playing" ? primary : "#666",
+                        }}>
+                        {r.status === "playing" ? "▶ PLAYING" : r.status === "played" ? "✓ Played" : "In Queue"}
+                      </span>
+                    </motion.div>
+                  ))}
+
+                  {/* ── Birthdays Tab ── */}
+                  {interactTab === "birthdays" && bdItems.map((b) => (
+                    <motion.div
+                      key={b.id}
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, x: -20 }}
+                      className="p-4"
+                    >
+                      {b.featured && (
+                        <div className="flex items-center gap-1.5 mb-2">
+                          <span className="text-[10px] font-black px-2 py-0.5 rounded-full" style={{ backgroundColor: `${primary}22`, color: primary }}>🎂 ON SCREEN NOW</span>
+                        </div>
+                      )}
+                      <div className="flex items-start gap-3">
+                        <div className="text-2xl flex-shrink-0">{b.emoji}</div>
+                        <div className="flex-1 min-w-0">
+                          <div className="font-black text-sm" style={{ color: b.featured ? primary : "#fff" }}>Happy Birthday, {b.name}!</div>
+                          <p className="text-xs text-white/60 leading-snug mt-0.5">{b.message}</p>
+                          <p className="text-xs text-white/30 mt-1">— {b.from}</p>
+                        </div>
+                        <button
+                          onClick={() => {
+                            if (bdVoted.has(b.id)) return;
+                            setBdVoted((p) => new Set([...p, b.id]));
+                          }}
+                          className="flex-shrink-0"
+                        >
+                          <Heart size={14} fill={bdVoted.has(b.id) ? primary : "none"} style={{ color: bdVoted.has(b.id) ? primary : "#666" }} />
+                        </button>
+                      </div>
+                    </motion.div>
+                  ))}
+
+                </AnimatePresence>
+              </div>
+            </div>
+
+            {/* Right: Submit form */}
+            <div className="rounded-2xl border border-white/10 p-5" style={{ backgroundColor: "#111" }}>
+              <div className="flex items-center gap-2 mb-4">
+                <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: `${primary}22` }}>
+                  {interactTab === "qa" ? <HelpCircle size={15} style={{ color: primary }} /> :
+                   interactTab === "requests" ? <Music size={15} style={{ color: primary }} /> :
+                   <Cake size={15} style={{ color: primary }} />}
+                </div>
+                <div>
+                  <div className="font-black text-sm">
+                    {interactTab === "qa" ? "Ask a Question" : interactTab === "requests" ? "Request a Song" : "Send a Birthday Wish"}
+                  </div>
+                  <div className="text-xs text-white/40">
+                    {interactTab === "qa" ? "The host will answer live" : interactTab === "requests" ? "Upvoted tracks get played first" : "We'll display it on the big screen"}
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <input
+                  type="text"
+                  placeholder="Your name (optional)"
+                  value={interactName}
+                  onChange={(e) => setInteractName(e.target.value)}
+                  className="w-full px-3 py-2.5 rounded-xl text-sm outline-none border border-white/10"
+                  style={{ backgroundColor: "#ffffff0a", color: "#fff" }}
+                />
+
+                <textarea
+                  rows={4}
+                  placeholder={
+                    interactTab === "qa"
+                      ? "Type your question..."
+                      : interactTab === "requests"
+                      ? "Song name by Artist (e.g. Essence by Wizkid)"
+                      : "Your message for [Name] (e.g. Happy birthday for JADE)"
+                  }
+                  value={interactInput}
+                  onChange={(e) => setInteractInput(e.target.value)}
+                  className="w-full px-3 py-2.5 rounded-xl text-sm outline-none border border-white/10 resize-none"
+                  style={{ backgroundColor: "#ffffff0a", color: "#fff" }}
+                  onKeyDown={(e) => { if (e.key === "Enter" && e.ctrlKey) submitInteract(); }}
+                />
+
+                <motion.button
+                  whileTap={{ scale: 0.97 }}
+                  onClick={submitInteract}
+                  disabled={!interactInput.trim()}
+                  className="w-full py-3 rounded-xl font-black text-sm text-black flex items-center justify-center gap-2 transition-all disabled:opacity-40"
+                  style={{ backgroundColor: primary }}
+                >
+                  <Send size={14} />
+                  {interactTab === "qa" ? "Ask Live" : interactTab === "requests" ? "Request Song" : "Send Wish 🎂"}
+                </motion.button>
+                <p className="text-[10px] text-center text-white/30">Your submission goes live instantly · Ctrl+Enter to submit</p>
+              </div>
+
+              {/* Live pulse indicator */}
+              <div className="mt-5 pt-4 border-t border-white/10">
+                <div className="text-xs font-bold text-white/40 uppercase tracking-wider mb-3">Tonight's Activity</div>
+                <div className="grid grid-cols-3 gap-2">
+                  {[
+                    { label: "Questions", val: qaItems.length, icon: HelpCircle },
+                    { label: "Requests", val: liveReqs.length, icon: Music },
+                    { label: "Wishes", val: bdItems.length, icon: Cake },
+                  ].map((s) => (
+                    <div key={s.label} className="rounded-lg py-2 text-center" style={{ backgroundColor: "#ffffff08" }}>
+                      <s.icon size={12} className="mx-auto mb-1" style={{ color: primary }} />
+                      <div className="font-black text-base">{s.val}</div>
+                      <div className="text-[9px] text-white/40">{s.label}</div>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
