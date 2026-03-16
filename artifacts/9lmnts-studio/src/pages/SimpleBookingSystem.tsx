@@ -23,7 +23,7 @@ interface Service {
   price: string;
   priceNum: number;
   description: string;
-  icon: React.ComponentType<{ className?: string }>;
+  icon: React.ComponentType<{ className?: string; style?: React.CSSProperties }>;
   tag: string;
   category: string;
   highlights: string[];

@@ -1,4 +1,4 @@
-import type { ComponentType } from "react";
+import type { ComponentType, CSSProperties } from "react";
 import {
   Zap,
   Users,
@@ -56,14 +56,14 @@ export interface EventOSData {
   liveStats: {
     label: string;
     value: string;
-    icon: ComponentType<{ size?: number; className?: string }>;
+    icon: ComponentType<{ size?: number; className?: string; style?: CSSProperties }>;
     color: string;
   }[];
   storeItems: {
     id: string;
     name: string;
     price: number;
-    icon: ComponentType<{ size?: number; className?: string }>;
+    icon: ComponentType<{ size?: number; className?: string; style?: CSSProperties }>;
     desc: string;
     color: string;
     popular: boolean;
