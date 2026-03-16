@@ -1,0 +1,2490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>🚀 LIVE: THE FEAST | Culinary Battle Royale</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Playfair+Display:wght@400;700;900&family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        /* --- CULINARY THEME VARIABLES --- */
+        :root {
+            --bg-color: #1a0f0f;       /* Dark chocolate */
+            --card-bg: #2a1a1a;        /* Rich espresso */
+            --modal-bg: #2a1a1a;
+            --primary: #D4AF37;        /* Gold */
+            --accent: #FF6B6B;         /* Tomato red */
+            --secondary: #C41E3A;      /* Burgundy */
+            --green: #2ecc71;          /* Fresh herb green */
+            --text-main: #f8f4e9;      /* Cream */
+            --text-sub: #b0a18e;       /* Parchment */
+            --border: #4a3c31;         /* Wood brown */
+            --input-bg: #1a0f0f;
+            --success: #27ae60;
+            --live-pulse: #ff4757;
+            
+            --font-head: 'Playfair Display', serif;
+            --font-body: 'Montserrat', sans-serif;
+            --font-decor: 'Georgia', serif;
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body { 
+            background: linear-gradient(135deg, #1a0f0f 0%, #2a1a1a 100%);
+            color: var(--text-main); 
+            font-family: var(--font-body); 
+            margin: 0; padding-bottom: 90px;
+            background-attachment: fixed;
+            overflow-x: hidden;
+        }
+        
+        .app-container { 
+            max-width: 480px; margin: 0 auto; min-height: 100vh; 
+            background: var(--bg-color); 
+            position: relative; overflow-x: hidden;
+            box-shadow: 0 0 60px rgba(212, 175, 55, 0.1);
+            border-left: 1px solid var(--border); border-right: 1px solid var(--border);
+        }
+        
+        /* LIVE EVENT HEADER */
+        .live-event-header { 
+            background: linear-gradient(90deg, #2a1a1a 0%, #1a0f0f 100%);
+            padding: 15px 20px; 
+            position: sticky; top: 0; z-index: 100; 
+            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 3px solid var(--primary);
+            box-shadow: 0 5px 20px rgba(212, 175, 55, 0.2);
+        }
+        .logo { 
+            font-family: var(--font-head); 
+            font-size: 1.8rem; 
+            font-weight: 900;
+            color: var(--primary); 
+            text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+            letter-spacing: 1px;
+        }
+        .logo span { color: var(--accent); font-style: italic; }
+        
+        .live-status {
+            display: flex; align-items: center; gap: 10px;
+        }
+        .live-badge { 
+            background: linear-gradient(90deg, #ff4757, #ff6b6b);
+            color: white; 
+            font-size: 0.7rem; 
+            font-weight: 900; 
+            padding: 6px 12px; 
+            border-radius: 20px; 
+            display: flex; 
+            align-items: center; 
+            gap: 6px; 
+            text-transform: uppercase;
+            box-shadow: 0 0 15px rgba(255, 71, 87, 0.5);
+            animation: pulse-glow 1.5s infinite;
+        }
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 15px rgba(255, 71, 87, 0.5); }
+            50% { box-shadow: 0 0 25px rgba(255, 71, 87, 0.8); }
+        }
+        
+        .live-timer {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--accent);
+            background: rgba(255, 107, 107, 0.1);
+            padding: 4px 10px;
+            border-radius: 10px;
+            border: 1px solid var(--accent);
+            font-family: var(--font-body);
+        }
+
+        /* LIVE ANNOUNCEMENT TICKER */
+        .announcement-ticker {
+            background: rgba(255, 107, 107, 0.1);
+            border-bottom: 1px solid rgba(255, 107, 107, 0.3);
+            padding: 10px 0;
+            overflow: hidden;
+            white-space: nowrap;
+            position: relative;
+        }
+        .ticker-content {
+            display: inline-block;
+            animation: ticker 30s linear infinite;
+            color: var(--accent);
+            font-weight: 600;
+            font-size: 0.8rem;
+            padding-left: 100%;
+        }
+        .ticker-content i { margin: 0 10px; color: var(--primary); }
+        @keyframes ticker {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-100%); }
+        }
+
+        /* HERO DASHBOARD - CULINARY STYLE */
+        .hero-dashboard-live {
+            background: radial-gradient(ellipse at center, #2a1a1a 0%, #1a0f0f 70%);
+            padding: 30px 20px 25px; 
+            text-align: center; 
+            border-bottom: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-dashboard-live::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--accent), var(--secondary));
+        }
+        
+        .hero-title { 
+            font-family: var(--font-head); 
+            margin: 0; 
+            font-size: 3.5rem; 
+            line-height: 0.9; 
+            color: var(--text-main); 
+            text-transform: uppercase; 
+            text-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+            font-weight: 900;
+            letter-spacing: 2px;
+        }
+        .hero-sub { 
+            color: var(--primary); 
+            font-weight: 900; 
+            letter-spacing: 3px; 
+            font-size: 0.75rem; 
+            margin: 10px 0 20px; 
+            text-transform: uppercase;
+            font-family: var(--font-body);
+        }
+        
+        .live-stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 25px 0 20px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 18px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            backdrop-filter: blur(10px);
+        }
+        .stat-item {
+            text-align: center;
+            flex: 1;
+        }
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: var(--primary);
+            display: block;
+            line-height: 1;
+            font-family: var(--font-head);
+        }
+        .stat-label {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            color: var(--text-sub);
+            font-weight: 700;
+            margin-top: 5px;
+            display:block;
+            letter-spacing: 1px;
+        }
+        .stat-icon {
+            color: var(--accent);
+            font-size: 1rem;
+            margin-bottom: 8px;
+        }
+
+        .main-cta-btn { 
+            width: 100%; 
+            padding: 18px; 
+            background: linear-gradient(90deg, var(--primary), #f1c40f);
+            color: #1a0f0f; 
+            border: none; 
+            border-radius: 12px; 
+            font-weight: 900; 
+            font-size: 1rem; 
+            margin: 20px 0 10px; 
+            cursor: pointer; 
+            transition: 0.3s; 
+            text-transform: uppercase;
+            box-shadow: 0 5px 25px rgba(212, 175, 55, 0.4);
+            font-family: var(--font-body);
+            position: relative;
+            overflow: hidden;
+            letter-spacing: 1px;
+        }
+        .main-cta-btn:active { transform: scale(0.98); }
+        .main-cta-btn:hover { box-shadow: 0 8px 30px rgba(212, 175, 55, 0.6); }
+
+        /* REVENUE RACK - CULINARY STYLE */
+        .contribution-section {
+            padding: 25px 0 30px 20px; 
+            margin: 25px 20px; 
+            background: var(--card-bg); 
+            border-radius: 20px;
+            border: 2px solid var(--primary);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+            position: relative;
+            overflow: hidden;
+        }
+        .contribution-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+        }
+        .section-header { 
+            display: flex; 
+            align-items: center; 
+            gap: 12px; 
+            margin-bottom: 25px; 
+            color: white; 
+            font-weight: 800; 
+            font-size: 1.1rem; 
+            font-family: var(--font-head);
+        }
+        .section-header i { color: var(--primary); font-size: 1.2rem; }
+        
+        .ticket-row { 
+            display: flex; 
+            gap: 15px; 
+            overflow-x: auto; 
+            padding-bottom: 10px; 
+            padding-right: 20px; 
+            scrollbar-width: none; 
+        }
+        .ticket-card {
+            min-width: 150px; 
+            padding: 20px 15px; 
+            border-radius: 15px; 
+            border: 2px solid var(--border);
+            background: var(--bg-color); 
+            cursor: pointer; 
+            text-align: center; 
+            transition: 0.3s;
+            flex-shrink: 0;
+            position: relative;
+        }
+        .ticket-card:active { transform: scale(0.97); }
+        .ticket-card:hover { border-color: var(--primary); }
+        .ticket-card.vip { 
+            border: 2px solid var(--primary); 
+            background: linear-gradient(145deg, rgba(212, 175, 55, 0.15), transparent); 
+            position: relative;
+        }
+        .vip-badge {
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--primary);
+            color: #1a0f0f;
+            font-size: 0.6rem;
+            font-weight: 900;
+            padding: 3px 12px;
+            border-radius: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .t-price { font-size: 1.8rem; font-weight: 900; color: var(--primary); margin-bottom: 5px; font-family: var(--font-head); }
+        .t-label { font-size: 0.8rem; color: var(--text-sub); margin-bottom: 15px; line-height: 1.2; }
+        .t-btn { 
+            font-size: 0.85rem; 
+            font-weight: 900; 
+            padding: 12px 0; 
+            border-radius: 25px; 
+            border: none; 
+            background: var(--accent); 
+            color: white; 
+            width: 100%; 
+            cursor: pointer; 
+            transition: 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .t-btn:hover { opacity: 0.9; transform: translateY(-2px); }
+        .vip .t-btn { background: var(--primary); color: #1a0f0f; }
+
+        /* TABS - CULINARY STYLE */
+        .nav-tabs { 
+            display: flex; 
+            background: var(--card-bg); 
+            padding: 0 5px; 
+            border-bottom: 1px solid var(--border); 
+            overflow-x: auto;
+            position: sticky;
+            top: 78px;
+            z-index: 90;
+        }
+        .tab { 
+            padding: 18px 20px; 
+            color: var(--text-sub); 
+            font-weight: 800; 
+            font-size: 0.9rem; 
+            cursor: pointer; 
+            white-space: nowrap; 
+            border-bottom: 3px solid transparent; 
+            transition: 0.2s;
+            flex: 1;
+            text-align: center;
+            font-family: var(--font-body);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .tab.active { 
+            color: var(--primary); 
+            border-bottom: 3px solid var(--primary);
+            background: rgba(212, 175, 55, 0.05);
+        }
+        .tab-notification {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            width: 8px;
+            height: 8px;
+            background: var(--accent);
+            border-radius: 50%;
+            animation: pulse 1s infinite;
+        }
+
+        /* SECTIONS */
+        .view-section { display: none; padding: 25px 20px; animation: fadeIn 0.4s ease; }
+        .view-section.active { display: block; }
+
+        /* --- CHEF BATTLE ENGINE --- */
+        
+        /* Live Match - CULINARY STYLE */
+        .battle-header { 
+            text-align: center; 
+            margin-bottom: 25px; 
+            color: var(--accent); 
+            font-size: 0.85rem; 
+            text-transform: uppercase; 
+            letter-spacing: 1.5px; 
+            font-weight: 900; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            font-family: var(--font-body);
+        }
+        .live-indicator {
+            background: var(--accent);
+            color: white;
+            font-size: 0.6rem;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-weight: 900;
+            animation: pulse 1.5s infinite;
+        }
+        
+        .battle-container { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 18px; 
+            margin-bottom: 30px; 
+        }
+        .battle-card { 
+            background: var(--card-bg); 
+            padding: 25px 20px; 
+            text-align: center; 
+            border-radius: 20px; 
+            border: 2px solid var(--border); 
+            position: relative;
+            transition: 0.3s;
+            overflow: hidden;
+        }
+        .battle-card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0,0,0,0.3); }
+        .bc-gold { border-top: 5px solid var(--primary); }
+        .bc-red { border-top: 5px solid var(--accent); }
+        
+        .vote-percentage {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--primary);
+            font-family: var(--font-head);
+        }
+        .bc-gold .vote-percentage { color: var(--primary); }
+        .bc-red .vote-percentage { color: var(--accent); }
+        
+        .bc-avatar { 
+            width: 100px; 
+            height: 100px; 
+            background-size: cover; 
+            margin: 0 auto 15px; 
+            border-radius: 50%; 
+            border: 4px solid var(--bg-color); 
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+        .bc-name { 
+            font-family: var(--font-head); 
+            font-size: 1.8rem; 
+            line-height: 1; 
+            margin: 0; 
+            color: var(--text-main);
+            font-weight: 700;
+        }
+        .bc-role { 
+            font-size: 0.8rem; 
+            color: var(--text-sub); 
+            margin-bottom: 15px; 
+            font-weight: 600;
+            font-style: italic;
+        }
+        
+        .menu-preview {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 15px;
+            margin: 15px 0;
+            text-align: left;
+            border-left: 3px solid var(--primary);
+        }
+        .menu-title {
+            font-weight: 900;
+            color: var(--primary);
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .menu-desc {
+            font-size: 0.8rem;
+            color: var(--text-sub);
+            line-height: 1.4;
+        }
+        
+        .vote-progress {
+            width: 100%;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+        .vote-fill {
+            height: 100%;
+            border-radius: 5px;
+            transition: width 1s ease-out;
+        }
+        .bc-gold .vote-fill { background: var(--primary); }
+        .bc-red .vote-fill { background: var(--accent); }
+        
+        .bc-btn { 
+            width: 100%; 
+            padding: 14px; 
+            font-weight: 900; 
+            border: none; 
+            cursor: pointer; 
+            text-transform: uppercase; 
+            border-radius: 12px; 
+            font-size: 0.9rem; 
+            color: white; 
+            transition: 0.2s;
+            letter-spacing: 1px;
+        }
+        .bc-btn:active { transform: scale(0.98); }
+        .btn-gold { 
+            background: var(--primary); 
+            color: #1a0f0f;
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
+        }
+        .btn-red { 
+            background: var(--accent); 
+            box-shadow: 0 0 15px rgba(255, 107, 107, 0.3);
+        }
+
+        /* Chefs Grid */
+        .grid-header { 
+            font-size: 1.1rem; 
+            font-weight: 900; 
+            color: white; 
+            margin: 35px 0 25px; 
+            border-bottom: 1px solid var(--border); 
+            padding-bottom: 15px; 
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: var(--font-head);
+        }
+        .contestant-grid { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 15px; 
+        }
+        
+        .c-card { 
+            background: var(--card-bg); 
+            padding: 18px; 
+            border-radius: 15px; 
+            border: 1px solid var(--border); 
+            display: flex; 
+            align-items: center; 
+            gap: 15px; 
+            cursor: pointer; 
+            transition: 0.2s; 
+        }
+        .c-card:active { transform: scale(0.98); }
+        .c-card.active { border-color: var(--primary); background: rgba(212, 175, 55, 0.05); }
+        .c-img { 
+            width: 55px; 
+            height: 55px; 
+            border-radius: 50%; 
+            background-size: cover; 
+            background-color: #333; 
+            border: 2px solid var(--border);
+        }
+        .c-info { flex: 1; }
+        .c-title { font-weight: 900; font-size: 0.95rem; line-height: 1.1; color: white; }
+        .c-sub { font-size: 0.75rem; color: var(--text-sub); }
+        .c-vote-icon { 
+            color: var(--primary); 
+            font-size: 0.8rem; 
+            font-weight: 900;
+            border: 1px solid var(--primary); 
+            padding: 8px 15px; 
+            border-radius: 20px; 
+            transition: 0.2s;
+            text-transform: uppercase;
+        }
+        .c-vote-icon:hover { background: var(--primary); color: #1a0f0f; }
+
+        /* KITCHEN NETWORK GRID */
+        .network-grid { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 18px; 
+        }
+        .profile-card-grid { 
+            background: var(--card-bg); 
+            padding: 25px 15px; 
+            border-radius: 18px; 
+            text-align: center; 
+            border: 1px solid var(--border); 
+            cursor: pointer; 
+            transition: 0.2s;
+        }
+        .profile-card-grid:active { transform: scale(0.98); }
+        .pcg-avatar { 
+            width: 75px; 
+            height: 75px; 
+            background-color: var(--bg-color); 
+            border-radius: 50%; 
+            margin: 0 auto 15px; 
+            background-size: cover; 
+            border: 3px solid var(--border); 
+        }
+        .pcg-name { 
+            font-weight: 900; 
+            font-size: 1.05rem; 
+            margin-bottom: 5px; 
+            color: white; 
+            font-family: var(--font-head);
+        }
+        .pcg-role { 
+            font-size: 0.8rem; 
+            color: var(--text-sub); 
+            text-transform: uppercase; 
+            margin-bottom: 20px; 
+            font-weight: 600; 
+        }
+        .pcg-btn { 
+            background: transparent; 
+            border: 1px solid var(--accent); 
+            color: var(--accent); 
+            padding: 10px 22px; 
+            border-radius: 25px; 
+            font-size: 0.8rem; 
+            font-weight: 900; 
+            transition: 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .pcg-btn:hover { background: var(--accent); color: white; }
+
+        /* FOOD CRITICS Q&A */
+        .qa-card { 
+            background: var(--card-bg); 
+            padding: 20px; 
+            border-radius: 15px; 
+            margin-bottom: 15px; 
+            border: 1px solid var(--border); 
+            display: flex; 
+            gap: 18px; 
+            transition: 0.2s;
+        }
+        .qa-card:active { transform: scale(0.99); }
+        .upvote-box { 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            min-width: 50px; 
+            justify-content: center; 
+        }
+        .arrow { 
+            font-size: 1.5rem; 
+            color: var(--text-sub); 
+            cursor: pointer; 
+            transition: 0.2s;
+        }
+        .arrow:active { transform: scale(1.2); }
+        .arrow.active { color: var(--accent); }
+        .count { 
+            font-weight: 900; 
+            font-size: 1.1rem; 
+            margin-top: 8px; 
+            color: var(--primary);
+            font-family: var(--font-head);
+        }
+
+        /* BOTTOM NAV - CULINARY STYLE */
+        .bottom-nav { 
+            position: fixed; 
+            bottom: 0; 
+            width: 100%; 
+            max-width: 480px; 
+            background: rgba(42, 26, 26, 0.95); 
+            backdrop-filter: blur(10px);
+            border-top: 2px solid var(--primary); 
+            display: flex; 
+            justify-content: space-around; 
+            padding: 18px 0; 
+            z-index: 100; 
+            box-shadow: 0 -8px 35px rgba(0,0,0,0.4); 
+        }
+        .nav-item { 
+            text-align: center; 
+            color: var(--text-sub); 
+            font-size: 0.7rem; 
+            cursor: pointer; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            gap: 8px; 
+            font-weight: 800; 
+            position: relative;
+            transition: 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .nav-item:active { transform: scale(0.95); }
+        .nav-item.active { color: var(--primary); }
+        .nav-item i { font-size: 1.5rem; }
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--accent);
+            color: white;
+            font-size: 0.6rem;
+            font-weight: 900;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: pulse 1.5s infinite;
+        }
+
+        /* QUICK ACTION FAB */
+        .quick-action-fab {
+            position: fixed;
+            bottom: 85px;
+            right: 25px;
+            width: 65px;
+            height: 65px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #1a0f0f;
+            font-size: 1.8rem;
+            cursor: pointer;
+            box-shadow: 0 8px 30px rgba(212, 175, 55, 0.6);
+            z-index: 99;
+            transition: 0.3s;
+            border: 3px solid var(--bg-color);
+        }
+        .quick-action-fab:active { 
+            transform: scale(0.9); 
+            box-shadow: 0 4px 20px rgba(212, 175, 55, 0.8);
+        }
+
+        /* --- MODALS --- */
+        .modal { 
+            display: none; 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            background: rgba(10, 5, 5, 0.95); 
+            z-index: 200; 
+            justify-content: center; 
+            align-items: center; 
+            backdrop-filter: blur(10px); 
+        }
+        .modal-box { 
+            width: 90%; 
+            max-width: 420px; 
+            background: var(--modal-bg); 
+            padding: 0; 
+            border-radius: 24px; 
+            position: relative; 
+            border-top: 6px solid var(--primary); 
+            animation: slideUp 0.3s; 
+            overflow: hidden; 
+            box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.7); 
+        }
+        
+        .m-header { 
+            padding: 30px 25px; 
+            border-bottom: 1px solid var(--border); 
+            position: relative; 
+            text-align: center; 
+            background: rgba(0,0,0,0.2);
+        }
+        .m-title { 
+            margin: 0; 
+            color: var(--primary); 
+            font-size: 1.5rem; 
+            font-weight: 900; 
+            text-transform: uppercase; 
+            font-family: var(--font-head);
+        }
+        .m-close { 
+            position: absolute; 
+            top: 25px; 
+            right: 30px; 
+            font-size: 2.2rem; 
+            color: var(--text-sub); 
+            cursor: pointer; 
+            transition: 0.2s;
+            font-family: sans-serif;
+        }
+        .m-close:active { transform: scale(1.2); }
+        .m-body { padding: 35px; }
+
+        /* VOTE MODAL */
+        .vote-tabs { 
+            display: flex; 
+            background: var(--bg-color); 
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 25px;
+        }
+        .v-tab { 
+            flex: 1; 
+            padding: 20px; 
+            text-align: center; 
+            font-size: 0.9rem; 
+            font-weight: 900; 
+            color: var(--text-sub); 
+            cursor: pointer; 
+            transition: 0.2s;
+            text-transform: uppercase;
+        }
+        .v-tab:active { transform: scale(0.98); }
+        .v-tab.active { 
+            color: var(--primary); 
+            background: rgba(212, 175, 55, 0.1);
+            border-bottom: 3px solid var(--primary); 
+        }
+        
+        .vote-option { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            padding: 22px; 
+            background: var(--bg-color); 
+            border: 2px solid var(--border); 
+            border-radius: 15px; 
+            margin-bottom: 18px; 
+            cursor: pointer; 
+            transition: 0.2s; 
+        }
+        .vote-option:active { transform: scale(0.98); }
+        .vote-option:hover, .vote-option.selected { 
+            border-color: var(--primary); 
+            background: rgba(212, 175, 55, 0.1); 
+            box-shadow: 0 8px 20px rgba(212, 175, 55, 0.2);
+        }
+
+        .submit-action { 
+            background: linear-gradient(90deg, var(--primary), #f1c40f); 
+            color: #1a0f0f; 
+            border: none; 
+            padding: 20px; 
+            width: 100%; 
+            font-weight: 900; 
+            border-radius: 15px; 
+            cursor: pointer; 
+            text-transform: uppercase; 
+            margin-top: 20px; 
+            font-size: 1rem;
+            transition: 0.2s;
+            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.3);
+            letter-spacing: 1px;
+        }
+        .submit-action:active { transform: scale(0.98); }
+
+        /* PROFILE MODAL */
+        .profile-header-lg { 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            margin-bottom: 30px; 
+        }
+        .avatar-lg { 
+            width: 120px; 
+            height: 120px; 
+            background: var(--bg-color); 
+            border-radius: 50%; 
+            margin-bottom: 25px; 
+            background-size: cover; 
+            border: 5px solid var(--border); 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+        }
+        .tip-wrapper { 
+            width: 100%; 
+            margin: 30px 0 35px; 
+            text-align: left; 
+            background: var(--bg-color);
+            padding: 25px;
+            border-radius: 15px;
+            border: 1px solid var(--border);
+        }
+        .tip-header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 20px; 
+        }
+        .tip-btn-mini { 
+            background: var(--accent); 
+            color: white; 
+            border: none; 
+            padding: 10px 18px; 
+            border-radius: 20px; 
+            font-size: 0.8rem; 
+            font-weight: 900; 
+            cursor: pointer; 
+            transition: 0.2s;
+            text-transform: uppercase;
+        }
+        .tip-btn-mini:active { transform: scale(0.95); }
+        .tip-bar-bg { 
+            width: 100%; 
+            height: 15px; 
+            background: var(--border); 
+            border-radius: 8px; 
+            overflow: hidden; 
+            margin-bottom: 12px; 
+        }
+        .tip-fill { 
+            height: 100%; 
+            background: linear-gradient(90deg, var(--accent), var(--primary)); 
+            width: 0%; 
+            transition: width 1s ease-out; 
+        }
+
+        /* MENU ITEMS FOR SALE */
+        .menu-item-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 25px 0;
+        }
+        .menu-item-card {
+            background: var(--bg-color);
+            border: 2px solid var(--border);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .menu-item-card:active { transform: scale(0.98); }
+        .menu-item-card:hover { border-color: var(--primary); }
+        .menu-item-price {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: var(--primary);
+            margin-bottom: 10px;
+            font-family: var(--font-head);
+        }
+        .menu-item-name {
+            font-weight: 900;
+            font-size: 1rem;
+            margin-bottom: 8px;
+            color: white;
+        }
+        .menu-item-desc {
+            font-size: 0.8rem;
+            color: var(--text-sub);
+            margin-bottom: 15px;
+            line-height: 1.3;
+        }
+
+        /* AGENDA LIST */
+        .agenda-list { 
+            list-style: none; 
+            padding: 0; 
+            margin: 0; 
+            text-align: left; 
+        }
+        .agenda-item { 
+            padding: 22px 0; 
+            border-bottom: 1px solid var(--border); 
+            color: white; 
+            display: flex; 
+            gap: 25px; 
+            align-items: flex-start;
+        }
+        .agenda-item.current {
+            background: rgba(212, 175, 55, 0.05);
+            border-left: 6px solid var(--primary);
+            margin-left: -35px;
+            padding-left: 30px;
+            border-radius: 0 15px 15px 0;
+        }
+        .agenda-time { 
+            font-weight: 900; 
+            color: var(--primary); 
+            white-space: nowrap; 
+            font-size: 1.1rem; 
+            min-width: 90px; 
+            font-family: var(--font-head);
+        }
+        .agenda-desc { 
+            font-size: 1rem; 
+            font-weight: 600; 
+            flex: 1;
+        }
+        .current-session {
+            display: inline-block;
+            background: var(--accent);
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 900;
+            padding: 4px 12px;
+            border-radius: 12px;
+            margin-left: 12px;
+            animation: pulse 2s infinite;
+        }
+
+        /* ASK TEXTAREA */
+        .ask-textarea {
+            width: 100%;
+            height: 140px;
+            background: var(--bg-color);
+            border: 2px solid var(--border);
+            border-radius: 15px;
+            padding: 20px;
+            color: white;
+            font-family: var(--font-body);
+            font-size: 1rem;
+            margin-bottom: 25px;
+            resize: none;
+        }
+
+        @keyframes fadeIn { 
+            from { opacity: 0; transform: translateY(20px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
+        @keyframes slideUp { 
+            from { transform: translateY(30px); opacity: 0; } 
+            to { transform: translateY(0); opacity: 1; } 
+        }
+        @keyframes pulse { 
+            0%, 100% { opacity: 1; } 
+            50% { opacity: 0.6; } 
+        }
+    </style>
+</head>
+<body data-theme="dark">
+
+<div class="app-container">
+    <!-- LIVE EVENT HEADER -->
+    <div class="live-event-header">
+        <div class="logo">THE <span>FEAST</span></div>
+        <div class="live-status">
+            <div class="live-timer" id="liveTimer">NEXT: 8:00 PM</div>
+            <div class="live-badge"><i class="fas fa-utensils"></i> LIVE KITCHEN</div>
+        </div>
+    </div>
+
+    <!-- LIVE ANNOUNCEMENT TICKER -->
+    <div class="announcement-ticker">
+        <div class="ticker-content" id="announcementTicker">
+            <!-- Ticker populated by JS -->
+        </div>
+    </div>
+
+    <!-- HERO DASHBOARD -->
+    <div class="hero-dashboard-live">
+        <div class="hero-sub">CULINARY CHAMPIONSHIP • FEB 28 • GRAND KITCHEN</div>
+        <h1 class="hero-title">CHEF<br>BATTLE</h1>
+        
+        <div class="live-stats">
+            <div class="stat-item">
+                <div class="stat-icon"><i class="fas fa-users"></i></div>
+                <div class="stat-value" id="liveAudience">874</div>
+                <div class="stat-label">Foodies Live</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-icon"><i class="fas fa-vote-yea"></i></div>
+                <div class="stat-value" id="totalVotes">2,458</div>
+                <div class="stat-label">Taste Votes</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-icon"><i class="fas fa-clock"></i></div>
+                <div class="stat-value" id="matchTimer">45:12</div>
+                <div class="stat-label">Cook Time</div>
+            </div>
+        </div>
+
+        <button class="main-cta-btn" onclick="openModal('contributeModal')">
+            <i class="fas fa-utensil-spoon"></i> ORDER & SUPPORT
+        </button>
+    </div>
+
+    <!-- REVENUE RACK - CULINARY -->
+    <div class="contribution-section">
+        <div class="section-header">
+            <i class="fas fa-concierge-bell"></i> TASTE EXPERIENCES
+        </div>
+        <div class="ticket-row">
+            <div class="ticket-card" onclick="openTierSelection(25, 'Taste Plate')">
+                <div class="t-price">$25</div>
+                <div class="t-label">Tasting Plate</div>
+                <button class="t-btn">ORDER NOW</button>
+            </div>
+            <div class="ticket-card" onclick="openTierSelection(50, 'Power Tastes')">
+                <div class="t-price">$50</div>
+                <div class="t-label">5x Power Votes</div>
+                <button class="t-btn">BOOST CHEF</button>
+            </div>
+            <div class="ticket-card vip" onclick="openTierSelection(150, 'VIP Chef Table')">
+                <div class="vip-badge">VIP</div>
+                <div class="t-price">$150</div>
+                <div class="t-label">Chef's Table VIP</div>
+                <button class="t-btn">RESERVE</button>
+            </div>
+            <div class="ticket-card" onclick="openTierSelection(15, 'Kitchen Tip')">
+                <div class="t-price">$15</div>
+                <div class="t-label">Tip the Kitchen</div>
+                <button class="t-btn">THANK CHEFS</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN NAV TABS -->
+    <div class="nav-tabs">
+        <div class="tab active" onclick="switchTab('battle', this)">
+            <i class="fas fa-utensils"></i> BATTLE
+            <div class="tab-notification" id="battleNotification"></div>
+        </div>
+        <div class="tab" onclick="switchTab('kitchen', this)">
+            <i class="fas fa-user-chef"></i> KITCHEN
+        </div>
+        <div class="tab" onclick="switchTab('critics', this)">
+            <i class="fas fa-star"></i> CRITICS
+            <div class="tab-notification" id="criticsNotification"></div>
+        </div>
+    </div>
+
+    <!-- TAB 1: CHEF BATTLE -->
+    <div id="battle" class="view-section active">
+        <!-- Live Match -->
+        <div class="battle-header">
+            <div class="live-indicator">COOKING NOW</div>
+            <span id="currentMatch">MAIN COURSE • ROUND 3</span>
+        </div>
+        <div class="battle-container">
+            <div class="battle-card bc-gold">
+                <div class="vote-percentage" id="voteGold">52%</div>
+                <div class="bc-avatar" style="background-image: url('https://images.unsplash.com/photo-1583394293214-28ded15ee548?w=400');"></div>
+                <h3 class="bc-name">CHEF KAITO</h3>
+                <div class="bc-role">Japanese Fusion Master</div>
+                
+                <div class="menu-preview">
+                    <div class="menu-title"><i class="fas fa-fish"></i> SIGNATURE DISH</div>
+                    <div class="menu-desc"><strong>Wagyu Skewer</strong> with Truffle Glaze, Edible Flowers, and 24K Gold Flakes</div>
+                </div>
+                
+                <div class="vote-progress">
+                    <div class="vote-fill" id="progressGold" style="width: 52%"></div>
+                </div>
+                
+                <button class="bc-btn btn-gold" onclick="openVote('Chef Kaito', 'var(--primary)', 'Chef Kaito')">
+                    <i class="fas fa-star"></i> VOTE FLAVOR
+                </button>
+            </div>
+            
+            <div class="battle-card bc-red">
+                <div class="vote-percentage" id="voteRed">48%</div>
+                <div class="bc-avatar" style="background-image: url('https://images.unsplash.com/photo-1577106263724-2c8e03bfe9f4?w=400');"></div>
+                <h3 class="bc-name">CHEF MARCO</h3>
+                <div class="bc-role">Italian Culinary Artist</div>
+                
+                <div class="menu-preview">
+                    <div class="menu-title"><i class="fas fa-pizza-slice"></i> SIGNATURE DISH</div>
+                    <div class="menu-desc"><strong>Lobster Ravioli</strong> with Saffron Foam, Micro Greens, and Black Truffle</div>
+                </div>
+                
+                <div class="vote-progress">
+                    <div class="vote-fill" id="progressRed" style="width: 48%"></div>
+                </div>
+                
+                <button class="bc-btn btn-red" onclick="openVote('Chef Marco', 'var(--accent)', 'Chef Marco')">
+                    <i class="fas fa-palette"></i> VOTE PLATING
+                </button>
+            </div>
+        </div>
+
+        <!-- All Chefs Grid -->
+        <div class="grid-header">
+            ALL CONTESTANTS
+            <span style="font-size:0.8rem; color:var(--text-sub);">8 CHEFS • $25K PRIZE</span>
+        </div>
+        <div class="contestant-grid" id="contestantGrid">
+            <!-- Chefs populated by JS -->
+        </div>
+    </div>
+
+    <!-- TAB 2: KITCHEN NETWORK -->
+    <div id="kitchen" class="view-section">
+        <div class="grid-header">
+            KITCHEN CREW
+            <span style="font-size:0.8rem; color:var(--text-sub);" id="kitchenCount">24 ACTIVE</span>
+        </div>
+        <div class="network-grid" id="networkGrid">
+            <!-- Network cards populated by JS -->
+        </div>
+    </div>
+
+    <!-- TAB 3: FOOD CRITICS -->
+    <div id="critics" class="view-section">
+        <button class="main-cta-btn" style="margin-bottom:25px; padding:15px;" onclick="openModal('askModal')">
+            <i class="fas fa-question-circle"></i> ASK A CRITIC
+        </button>
+        
+        <div id="questionsContainer">
+            <!-- Questions populated by JS -->
+        </div>
+    </div>
+
+    <!-- QUICK ACTION FAB -->
+    <div class="quick-action-fab" onclick="openQuickActions()">
+        <i class="fas fa-utensil-spoon"></i>
+    </div>
+
+    <!-- BOTTOM NAV -->
+    <div class="bottom-nav">
+        <div class="nav-item active" onclick="switchTab('battle', this)">
+            <i class="fas fa-utensils"></i>
+            BATTLE
+            <div class="notification-badge" id="navBattleBadge">3</div>
+        </div>
+        <div class="nav-item" onclick="openModal('agendaModal')">
+            <i class="far fa-calendar-alt"></i>
+            MENU
+        </div>
+        <div class="nav-item" onclick="switchTab('kitchen', this)">
+            <i class="fas fa-user-chef"></i>
+            KITCHEN
+            <div class="notification-badge" id="navKitchenBadge">2</div>
+        </div>
+        <div class="nav-item" onclick="openModal('profileModal')">
+            <i class="fas fa-concierge-bell"></i>
+            ORDER
+        </div>
+    </div>
+</div>
+
+<!-- ============ MODALS ============ -->
+
+<!-- VOTE MODAL -->
+<div id="voteModal" class="modal">
+    <div class="modal-box">
+        <div class="m-header">
+            <div class="m-title">TASTE VOTE</div>
+            <div style="font-size:0.9rem; color:var(--text-sub); margin-top:8px;">
+                Rating for: <span id="voteTarget" style="color:var(--primary); font-weight:900; font-size:1.1rem;">CHEF</span>
+            </div>
+            <span class="m-close" onclick="closeModal('voteModal')">&times;</span>
+        </div>
+        <div class="vote-tabs">
+            <div class="v-tab active" onclick="switchVoteTab('free', this)">FREE TASTE VOTE</div>
+            <div class="v-tab" onclick="switchVoteTab('power', this)">POWER VOTE (+$)</div>
+        </div>
+        <div class="m-body">
+            <div id="freeVoteSection">
+                <p style="color:var(--text-sub); font-size:0.95rem; margin-bottom:25px; text-align:center;">
+                    Cast your single taste vote for this dish. Consider flavor, presentation, and creativity.
+                </p>
+                <button class="submit-action" style="background:var(--border);" onclick="castFreeVote()">
+                    <i class="fas fa-check-circle"></i> SUBMIT TASTE VOTE
+                </button>
+            </div>
+            <div id="powerVoteSection" style="display:none;">
+                <p style="color:var(--text-sub); font-size:0.9rem; margin-bottom:20px;">
+                    Boost your favorite chef with power votes! Each purchase supports the culinary arts.
+                </p>
+                <div class="vote-option" onclick="selectPowerOption(3, 10)">
+                    <span><strong>3 Power Votes</strong><br><small>Appetizer Pack</small></span>
+                    <span style="color:var(--primary); font-weight:900; font-size:1.1rem;">$10.00</span>
+                </div>
+                <div class="vote-option" onclick="selectPowerOption(10, 25)">
+                    <span><strong>10 Power Votes</strong><br><small>Main Course Pack</small></span>
+                    <span style="color:var(--primary); font-weight:900; font-size:1.1rem;">$25.00</span>
+                </div>
+                <div class="vote-option" onclick="selectPowerOption(25, 50)">
+                    <span><strong>25 Power Votes</strong><br><small>Chef's Special</small></span>
+                    <span style="color:var(--primary); font-weight:900; font-size:1.1rem;">$50.00</span>
+                </div>
+                <button class="submit-action" onclick="purchasePowerVotes()">
+                    <i class="fas fa-bolt"></i> PURCHASE & BOOST
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- AGENDA/MENU MODAL -->
+<div id="agendaModal" class="modal">
+    <div class="modal-box">
+        <div class="m-header">
+            <div class="m-title">BATTLE MENU SCHEDULE</div>
+            <span class="m-close" onclick="closeModal('agendaModal')">&times;</span>
+        </div>
+        <div class="m-body" style="padding:0 35px 35px;">
+            <ul class="agenda-list" id="agendaList">
+                <!-- Agenda populated by JS -->
+            </ul>
+            <button class="submit-action" style="margin-top:25px;" onclick="closeModal('agendaModal')">
+                CLOSE MENU
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- PROFILE/TIP MODAL -->
+<div id="profileModal" class="modal">
+    <div class="modal-box">
+        <div class="m-header">
+            <div class="m-title">CHEF PROFILE</div>
+            <span class="m-close" onclick="closeModal('profileModal')">&times;</span>
+        </div>
+        <div class="m-body">
+            <div class="profile-header-lg">
+                <div id="pAvatar" class="avatar-lg"></div>
+                <h2 id="pName" style="margin:0; font-size:1.6rem; color:white;">Chef Name</h2>
+                <p id="pRole" style="color:var(--text-sub); margin:8px 0 0; font-size:0.95rem;">Culinary Specialty</p>
+                <div style="margin-top:15px;">
+                    <span style="background:var(--accent); color:white; padding:6px 15px; border-radius:20px; font-size:0.75rem; font-weight:900;">
+                        <i class="fas fa-fire"></i> COOKING NOW
+                    </span>
+                </div>
+            </div>
+            <div class="tip-wrapper">
+                <div class="tip-header">
+                    <span class="tip-title" style="font-weight:900; color:white;">Tip Jar & Support</span>
+                    <button class="tip-btn-mini" onclick="openTipModal()">
+                        <i class="fas fa-hand-holding-heart"></i> TIP CHEF
+                    </button>
+                </div>
+                <div class="tip-bar-bg">
+                    <div id="pTipFill" class="tip-fill"></div>
+                </div>
+                <div style="display:flex; justify-content:space-between; font-size:0.85rem; color:var(--text-sub); margin-top:8px;">
+                    <span>Raised: <strong style="color:var(--accent);" id="raisedAmount">$420</strong></span>
+                    <span>Goal: <strong>$1,000</strong></span>
+                </div>
+            </div>
+            
+            <!-- Menu Items for Sale -->
+            <div style="margin:30px 0 25px;">
+                <div style="font-weight:900; font-size:1.1rem; color:white; margin-bottom:20px; text-align:center;">
+                    <i class="fas fa-shopping-basket"></i> ORDER CHEF'S DISHES
+                </div>
+                <div class="menu-item-grid">
+                    <div class="menu-item-card" onclick="openPay(45, 'Wagyu Skewer')">
+                        <div class="menu-item-price">$45</div>
+                        <div class="menu-item-name">Wagyu Skewer</div>
+                        <div class="menu-item-desc">Truffle glaze, edible flowers</div>
+                        <button class="t-btn" style="padding:10px;">ORDER</button>
+                    </div>
+                    <div class="menu-item-card" onclick="openPay(38, 'Lobster Ravioli')">
+                        <div class="menu-item-price">$38</div>
+                        <div class="menu-item-name">Lobster Ravioli</div>
+                        <div class="menu-item-desc">Saffron foam, black truffle</div>
+                        <button class="t-btn" style="padding:10px;">ORDER</button>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="submit-action" id="connectButton" onclick="toggleFollow()" style="margin-bottom:20px;">
+                <i class="fas fa-user-plus"></i> FOLLOW CHEF
+            </button>
+            <div style="text-align:center; font-size:0.9rem; color:var(--primary); font-weight:900; cursor:pointer; padding:15px; border:2px solid var(--border); border-radius:15px;" 
+                 onclick="sendCompliment()">
+                <i class="fas fa-comment-alt"></i> SEND COMPLIMENT TO KITCHEN
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CONTRIBUTE/ORDER MODAL -->
+<div id="contributeModal" class="modal">
+    <div class="modal-box" style="border-top-color: var(--primary);">
+        <div class="m-header">
+            <div class="m-title" style="color:var(--primary);">ORDER & SUPPORT</div>
+            <span class="m-close" onclick="closeModal('contributeModal')">&times;</span>
+        </div>
+        <div class="m-body">
+            <div style="text-align:center;">
+                <p style="color:var(--text-sub); margin-bottom:30px; font-size:0.95rem; text-align:center;">
+                    Choose how you'd like to support the culinary battle and enjoy exclusive benefits.
+                </p>
+                
+                <div class="vote-option" onclick="selectTier(25, 'Taste Plate')">
+                    <div style="font-weight:bold; margin-bottom:5px; font-size:1.1rem;">Taste Plate</div>
+                    <div style="font-size:0.85rem; color:var(--text-sub);">Sample all dishes • $25</div>
+                </div>
+                
+                <div class="vote-option" onclick="selectTier(50, 'Power Tastes')">
+                    <div style="font-weight:bold; margin-bottom:5px; font-size:1.1rem;">5 Power Votes</div>
+                    <div style="font-size:0.85rem; color:var(--text-sub);">Boost your favorite chef • $50</div>
+                </div>
+                
+                <div class="vote-option" onclick="selectTier(150, 'VIP Chef Table')">
+                    <div style="font-weight:bold; margin-bottom:5px; font-size:1.1rem;">VIP Chef's Table</div>
+                    <div style="font-size:0.85rem; color:var(--text-sub);">Exclusive seating, meet chefs • $150</div>
+                </div>
+                
+                <div class="vote-option" onclick="selectTier(15, 'Kitchen Tip')">
+                    <div style="font-weight:bold; margin-bottom:5px; font-size:1.1rem;">Tip the Kitchen</div>
+                    <div style="font-size:0.85rem; color:var(--text-sub);">Thank the culinary team • $15</div>
+                </div>
+                
+                <button class="submit-action" style="margin-top:25px;" 
+                        onclick="processContribution()" id="contributeBtn">
+                    <i class="fas fa-shopping-cart"></i> PROCEED TO CHECKOUT
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- TIP MODAL -->
+<div id="tipModal" class="modal">
+    <div class="modal-box">
+        <div class="m-header">
+            <div class="m-title">TIP THE CHEF</div>
+            <span class="m-close" onclick="closeModal('tipModal')">&times;</span>
+        </div>
+        <div class="m-body" style="text-align:center;">
+            <p style="color:var(--text-sub); margin-bottom:25px; font-size:0.95rem;">
+                Show your appreciation for culinary excellence. Tips go directly to the chef.
+            </p>
+            
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; margin-bottom:25px;">
+                <div class="vote-option" style="text-align:center;" onclick="selectTipAmount(5)">
+                    <div style="font-size:1.5rem; font-weight:900; color:var(--primary);">$5</div>
+                    <div style="font-size:0.8rem; color:var(--text-sub);">Coffee Tip</div>
+                </div>
+                <div class="vote-option" style="text-align:center;" onclick="selectTipAmount(15)">
+                    <div style="font-size:1.5rem; font-weight:900; color:var(--primary);">$15</div>
+                    <div style="font-size:0.8rem; color:var(--text-sub);">Round of Drinks</div>
+                </div>
+                <div class="vote-option" style="text-align:center;" onclick="selectTipAmount(25)">
+                    <div style="font-size:1.5rem; font-weight:900; color:var(--primary);">$25</div>
+                    <div style="font-size:0.8rem; color:var(--text-sub);">Ingredient Fund</div>
+                </div>
+                <div class="vote-option" style="text-align:center;" onclick="selectTipAmount(50)">
+                    <div style="font-size:1.5rem; font-weight:900; color:var(--primary);">$50</div>
+                    <div style="font-size:0.8rem; color:var(--text-sub);">Chef's Choice</div>
+                </div>
+            </div>
+            
+            <div style="display:flex; gap:10px; margin-bottom:25px;">
+                <input type="number" id="customTip" placeholder="Custom amount" min="1" max="500" 
+                       style="flex:1; padding:15px; background:var(--bg-color); border:2px solid var(--border); border-radius:12px; color:white; font-size:1rem;">
+                <button class="tip-btn-mini" style="padding:15px 20px;" onclick="useCustomTip()">CUSTOM</button>
+            </div>
+            
+            <button class="submit-action" onclick="sendTip()">
+                <i class="fas fa-heart"></i> SEND TIP TO CHEF
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ASK CRITIC MODAL -->
+<div id="askModal" class="modal">
+    <div class="modal-box">
+        <div class="m-header">
+            <div class="m-title">ASK A FOOD CRITIC</div>
+            <span class="m-close" onclick="closeModal('askModal')">&times;</span>
+        </div>
+        <div class="m-body">
+            <textarea class="ask-textarea" id="questionInput" placeholder="Ask about techniques, ingredients, plating, or culinary philosophy..."></textarea>
+            <div style="display:flex; gap:10px; margin-bottom:25px; flex-wrap:wrap;">
+                <label style="display:flex; align-items:center; font-size:0.85rem;">
+                    <input type="checkbox" id="anonymousCheck" style="margin-right:8px;">
+                    Ask anonymously
+                </label>
+                <label style="display:flex; align-items:center; font-size:0.85rem;">
+                    <input type="checkbox" id="urgentCheck" style="margin-right:8px;">
+                    Mark as urgent
+                </label>
+                <select id="criticSelect" style="flex:1; padding:10px; background:var(--bg-color); border:2px solid var(--border); border-radius:10px; color:white; font-size:0.85rem;">
+                    <option value="all">All Critics</option>
+                    <option value="gordon">Gordon Ramsey</option>
+                    <option value="wolfgang">Wolfgang Puck</option>
+                    <option value="massimo">Massimo Bottura</option>
+                </select>
+            </div>
+            <button class="submit-action" onclick="submitQuestion()">
+                <i class="fas fa-paper-plane"></i> SUBMIT QUESTION
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- PAYMENT MODAL -->
+<div id="payModal" class="modal">
+    <div class="modal-box">
+        <div class="m-header">
+            <div class="m-title">SECURE CHECKOUT</div>
+            <span class="m-close" onclick="closeModal('payModal')">&times;</span>
+        </div>
+        <div class="m-body" style="text-align:center;">
+            <h3 id="paymentTitle" style="margin-bottom:20px; color:var(--primary);">Payment for Order</h3>
+            <div style="font-size:3rem; font-weight:900; margin:25px 0; color:var(--accent);">
+                $<span id="payAmount">0</span>
+            </div>
+            <p style="font-size:0.85rem; color:var(--text-sub); margin-bottom:25px;">
+                Secure payment • 256-bit encryption • 100% satisfaction guarantee
+            </p>
+            
+            <div style="background:var(--bg-color); padding:25px; border-radius:15px; margin-bottom:25px;">
+                <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
+                    <span>Item:</span>
+                    <span id="paymentItem" style="font-weight:bold; color:var(--primary);"></span>
+                </div>
+                <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
+                    <span>Amount:</span>
+                    <span id="paymentAmount" style="font-weight:bold;"></span>
+                </div>
+                <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
+                    <span>Service fee:</span>
+                    <span id="paymentFee" style="font-weight:bold;"></span>
+                </div>
+                <hr style="border-color:var(--border); margin:20px 0;">
+                <div style="display:flex; justify-content:space-between; font-size:1.2rem; font-weight:bold;">
+                    <span>Total:</span>
+                    <span id="paymentTotal" style="color:var(--accent);"></span>
+                </div>
+            </div>
+            
+            <button class="submit-action" onclick="processPayment()">
+                <i class="fas fa-lock"></i> CONFIRM & PAY
+            </button>
+            
+            <p style="font-size:0.7rem; color:var(--text-sub); margin-top:20px;">
+                By completing this purchase, you agree to our Terms of Service
+            </p>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ============ GLOBAL STATE ============
+    const state = {
+        // Voting state
+        votes: {
+            'Chef Kaito': { count: 1280, percentage: 52, color: 'primary' },
+            'Chef Marco': { count: 1178, percentage: 48, color: 'accent' },
+            'Chef Isabella': { count: 0, percentage: 0, color: 'primary' },
+            'Chef Pierre': { count: 0, percentage: 0, color: 'accent' },
+            'Chef Sofia': { count: 0, percentage: 0, color: 'primary' },
+            'Chef Hiroshi': { count: 0, percentage: 0, color: 'accent' }
+        },
+        totalVotes: 2458,
+        liveAudience: 874,
+        
+        // Kitchen network state
+        following: new Set(),
+        kitchenProfiles: [
+            { id: 1, name: 'Sous Chef Maria', role: 'Sous Chef', img: 'https://images.unsplash.com/photo-1563245372-f21724e3856d?w=250', tipGoal: 65, following: false },
+            { id: 2, name: 'Pastry Chef Luca', role: 'Pastry Chef', img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=250', tipGoal: 40, following: false },
+            { id: 3, name: 'Wine Sommelier Ana', role: 'Sommelier', img: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=250', tipGoal: 85, following: false },
+            { id: 4, name: 'Head Bartender Max', role: 'Mixologist', img: null, tipGoal: 30, following: false }
+        ],
+        
+        // Critics Q&A state
+        questions: [
+            { id: 1, text: 'What inspired the truffle glaze on the Wagyu skewer?', author: 'FoodieFan92', time: '5m ago', votes: 42, voted: true, answered: true, answer: "Inspired by my grandmother's secret recipe from Kyoto." },
+            { id: 2, text: 'Is the saffron foam made with traditional methods?', author: 'CulinaryStudent', time: '12m ago', votes: 28, voted: false, answered: false },
+            { id: 3, text: 'What wine pairing would you recommend?', author: 'WineLover', time: '20m ago', votes: 35, voted: false, answered: true, answer: 'A bold Barolo would complement both dishes perfectly.' }
+        ],
+        
+        // Payment state
+        selectedTier: null,
+        selectedTierName: '',
+        selectedPowerOption: null,
+        selectedPowerVotes: 0,
+        selectedPowerAmount: 0,
+        currentVoteTarget: '',
+        selectedTipAmount: 0,
+        
+        // User state
+        user: {
+            name: 'Food Lover',
+            balance: 200,
+            orders: [],
+            powerVotes: 5,
+            following: []
+        }
+    };
+
+    // ============ UTILITY FUNCTIONS ============
+    function formatNumber(num) {
+        return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
+    function getRandomInt(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    // ============ INITIALIZATION ============
+    document.addEventListener('DOMContentLoaded', function() {
+        initializePage();
+        startLiveUpdates();
+        updateNotificationBadges();
+    });
+
+    function initializePage() {
+        // Initialize chefs grid
+        renderChefs();
+        
+        // Initialize kitchen network
+        renderKitchenNetwork();
+        
+        // Initialize critics Q&A
+        renderQuestions();
+        
+        // Initialize menu schedule
+        renderMenuSchedule();
+        
+        // Initialize ticker
+        updateTicker();
+        
+        // Set initial time
+        updateMatchTimer();
+        
+        // Set initial notifications
+        updateNotifications();
+    }
+
+    // ============ NAVIGATION ============
+    function switchTab(id, el) {
+        document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(t => t.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        if(el) el.classList.add('active');
+        
+        // Clear notifications for this tab
+        if(id === 'battle') {
+            state.battleNotifications = 0;
+            document.getElementById('battleNotification').style.display = 'none';
+            document.getElementById('navBattleBadge').style.display = 'none';
+        } else if(id === 'critics') {
+            state.criticsNotifications = 0;
+            document.getElementById('criticsNotification').style.display = 'none';
+        }
+        
+        updateNotificationBadges();
+    }
+
+    // ============ MODAL SYSTEM ============
+    function openModal(id, data) {
+        document.getElementById(id).style.display = 'flex';
+        
+        if(id === 'voteModal' && state.currentVoteTarget) {
+            document.getElementById('voteTarget').innerText = state.currentVoteTarget;
+        }
+        
+        if(id === 'profileModal' && data) {
+            openProfileModal(data.name, data.role, data.img, data.tipGoal);
+        }
+    }
+
+    function closeModal(id) { 
+        document.getElementById(id).style.display = 'none'; 
+        
+        // Reset forms
+        if(id === 'askModal') {
+            document.getElementById('questionInput').value = '';
+        }
+        if(id === 'tipModal') {
+            document.getElementById('customTip').value = '';
+            state.selectedTipAmount = 0;
+        }
+    }
+
+    // ============ VOTING SYSTEM ============
+    function openVote(name, color, target) {
+        state.currentVoteTarget = target;
+        document.getElementById('voteTarget').innerText = target;
+        switchVoteTab('free', document.querySelector('.v-tab'));
+        openModal('voteModal');
+    }
+
+    function switchVoteTab(type, el) {
+        document.querySelectorAll('.v-tab').forEach(t => t.classList.remove('active'));
+        el.classList.add('active');
+        document.getElementById('freeVoteSection').style.display = type === 'free' ? 'block' : 'none';
+        document.getElementById('powerVoteSection').style.display = type === 'power' ? 'block' : 'none';
+    }
+
+    function selectPowerOption(votes, amount) {
+        state.selectedPowerVotes = votes;
+        state.selectedPowerAmount = amount;
+        
+        document.querySelectorAll('.vote-option').forEach(o => o.classList.remove('selected'));
+        event.target.closest('.vote-option').classList.add('selected');
+    }
+
+    function castFreeVote() {
+        if(!state.currentVoteTarget) return;
+        
+        const target = state.currentVoteTarget;
+        if(state.votes[target]) {
+            // Update vote counts
+            state.votes[target].count += 1;
+            state.totalVotes += 1;
+            
+            // Update percentages
+            updateVotePercentages();
+            
+            // Update UI
+            updateVoteUI();
+            
+            // Show success
+            showToast('Taste vote cast for ' + target + '!');
+            closeModal('voteModal');
+            
+            // Add announcement
+            addAnnouncement('vote', `${target} received a new taste vote!`);
+            
+            // Update notifications
+            state.battleNotifications = (state.battleNotifications || 0) + 1;
+            updateNotificationBadges();
+        }
+    }
+
+    function purchasePowerVotes() {
+        if(state.selectedPowerVotes === 0) {
+            showToast('Please select a power vote package first');
+            return;
+        }
+        
+        if(!state.currentVoteTarget) return;
+        
+        const target = state.currentVoteTarget;
+        if(state.votes[target]) {
+            // Update vote counts
+            state.votes[target].count += state.selectedPowerVotes;
+            state.totalVotes += state.selectedPowerVotes;
+            
+            // Update percentages
+            updateVotePercentages();
+            
+            // Update UI
+            updateVoteUI();
+            
+            // Process payment
+            openPay(state.selectedPowerAmount, `${state.selectedPowerVotes} Power Votes for ${target}`);
+            
+            // Add announcement
+            addAnnouncement('power', `${target} received ${state.selectedPowerVotes} power votes!`);
+            
+            // Reset selection
+            state.selectedPowerVotes = 0;
+            state.selectedPowerAmount = 0;
+        }
+    }
+
+    function updateVotePercentages() {
+        const total = Object.values(state.votes).reduce((sum, vote) => sum + vote.count, 0);
+        
+        Object.keys(state.votes).forEach(chef => {
+            const vote = state.votes[chef];
+            vote.percentage = total > 0 ? Math.round((vote.count / total) * 100) : 0;
+        });
+        
+        // Update total votes display
+        document.getElementById('totalVotes').textContent = formatNumber(total);
+    }
+
+    function updateVoteUI() {
+        // Update Chef Kaito
+        const kaitoVote = state.votes['Chef Kaito'];
+        document.getElementById('voteGold').textContent = kaitoVote.percentage + '%';
+        document.getElementById('progressGold').style.width = kaitoVote.percentage + '%';
+        
+        // Update Chef Marco
+        const marcoVote = state.votes['Chef Marco'];
+        document.getElementById('voteRed').textContent = marcoVote.percentage + '%';
+        document.getElementById('progressRed').style.width = marcoVote.percentage + '%';
+        
+        // Update total votes
+        document.getElementById('totalVotes').textContent = formatNumber(state.totalVotes);
+    }
+
+    // ============ ORDER & TIPPING SYSTEM ============
+    function openTierSelection(amount, name) {
+        state.selectedTier = amount;
+        state.selectedTierName = name;
+        openModal('contributeModal');
+    }
+
+    function selectTier(amount, name) {
+        state.selectedTier = amount;
+        state.selectedTierName = name;
+        
+        document.querySelectorAll('.vote-option').forEach(o => o.classList.remove('selected'));
+        event.target.closest('.vote-option').classList.add('selected');
+    }
+
+    function processContribution() {
+        if(!state.selectedTier) {
+            showToast('Please select an option first');
+            return;
+        }
+        
+        openPay(state.selectedTier, state.selectedTierName);
+        closeModal('contributeModal');
+    }
+
+    function openTipModal() {
+        openModal('tipModal');
+    }
+
+    function selectTipAmount(amount) {
+        state.selectedTipAmount = amount;
+        document.querySelectorAll('.vote-option').forEach(o => o.classList.remove('selected'));
+        event.target.closest('.vote-option').classList.add('selected');
+    }
+
+    function useCustomTip() {
+        const customAmount = parseInt(document.getElementById('customTip').value);
+        if(customAmount && customAmount > 0 && customAmount <= 1000) {
+            state.selectedTipAmount = customAmount;
+            showToast(`Custom tip set to $${customAmount}`);
+        } else {
+            showToast('Please enter a valid amount (1-1000)');
+        }
+    }
+
+    function sendTip() {
+        if(state.selectedTipAmount === 0) {
+            showToast('Please select a tip amount first');
+            return;
+        }
+        
+        const chefName = document.getElementById('pName').textContent;
+        openPay(state.selectedTipAmount, `Tip for ${chefName}`);
+        closeModal('tipModal');
+        
+        // Add to chef's tip goal
+        const currentAmount = parseInt(document.getElementById('raisedAmount').textContent.replace('$', ''));
+        const newAmount = currentAmount + state.selectedTipAmount;
+        document.getElementById('raisedAmount').textContent = `$${newAmount}`;
+        
+        // Update progress bar
+        const goal = 1000;
+        const percentage = Math.min(100, Math.round((newAmount / goal) * 100));
+        document.getElementById('pTipFill').style.width = percentage + '%';
+        
+        // Reset
+        state.selectedTipAmount = 0;
+    }
+
+    function openPay(amount, description) {
+        const fee = amount * 0.029 + 0.30;
+        const total = (amount + fee).toFixed(2);
+        
+        document.getElementById('payAmount').textContent = amount;
+        document.getElementById('paymentTitle').textContent = 'Payment for ' + description;
+        document.getElementById('paymentItem').textContent = description;
+        document.getElementById('paymentAmount').textContent = '$' + amount.toFixed(2);
+        document.getElementById('paymentFee').textContent = '$' + fee.toFixed(2);
+        document.getElementById('paymentTotal').textContent = '$' + total;
+        
+        openModal('payModal');
+    }
+
+    function processPayment() {
+        const btn = document.querySelector('#payModal .submit-action');
+        const original = btn.innerHTML;
+        
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> PROCESSING...';
+        btn.disabled = true;
+        
+        setTimeout(() => {
+            const amount = parseFloat(document.getElementById('payAmount').textContent);
+            const item = document.getElementById('paymentItem').textContent;
+            
+            showToast('Payment successful! Thank you for your order.');
+            closeModal('payModal');
+            
+            // Update user balance
+            state.user.balance -= amount;
+            
+            // Add to user's orders
+            state.user.orders.push({
+                item: item,
+                amount: amount,
+                date: new Date().toLocaleTimeString()
+            });
+            
+            // If this was a vote pack, add to user's votes
+            if(state.selectedPowerVotes > 0) {
+                state.user.powerVotes += state.selectedPowerVotes;
+            }
+            
+            // Reset
+            state.selectedTier = null;
+            state.selectedTierName = '';
+            state.selectedPowerVotes = 0;
+            state.selectedPowerAmount = 0;
+            
+            btn.innerHTML = original;
+            btn.disabled = false;
+            
+            // Add announcement
+            addAnnouncement('payment', `New order: ${item}`);
+            
+            // If it's a dish order, show special message
+            if(item.includes('Wagyu') || item.includes('Ravioli')) {
+                setTimeout(() => {
+                    showToast('Your dish will be prepared fresh! Estimated time: 25 minutes.');
+                }, 500);
+            }
+        }, 1500);
+    }
+
+    // ============ KITCHEN NETWORK ============
+    function renderKitchenNetwork() {
+        const grid = document.getElementById('networkGrid');
+        grid.innerHTML = '';
+        
+        state.kitchenProfiles.forEach(profile => {
+            const card = document.createElement('div');
+            card.className = 'profile-card-grid';
+            card.onclick = () => openProfileModal(profile.name, profile.role, profile.img, profile.tipGoal);
+            
+            card.innerHTML = `
+                <div class="pcg-avatar" style="background-image: ${profile.img ? `url('${profile.img}')` : 'none'};">
+                    ${!profile.img ? '<i class="fas fa-user-chef"></i>' : ''}
+                </div>
+                <div class="pcg-name">${profile.name}</div>
+                <div class="pcg-role">${profile.role}</div>
+                <button class="pcg-btn" onclick="event.stopPropagation(); toggleFollow(${profile.id})">
+                    ${profile.following ? 'FOLLOWING' : 'FOLLOW'}
+                </button>
+            `;
+            
+            grid.appendChild(card);
+        });
+        
+        // Update kitchen count
+        const activeCount = getRandomInt(20, 30);
+        document.getElementById('kitchenCount').textContent = `${activeCount} ACTIVE`;
+    }
+
+    function openProfileModal(name, role, img, tipGoal) {
+        document.getElementById('pName').textContent = name;
+        document.getElementById('pRole').textContent = role;
+        
+        const avatar = document.getElementById('pAvatar');
+        avatar.style.backgroundImage = img ? `url('${img}')` : 'none';
+        avatar.innerHTML = img ? '' : '<i class="fas fa-user-chef" style="font-size:3rem; color:var(--text-sub); margin-top:25px;"></i>';
+        
+        document.getElementById('raisedAmount').textContent = `$${tipGoal * 10}`;
+        document.getElementById('pTipFill').style.width = '0%';
+        
+        const followBtn = document.getElementById('connectButton');
+        const profile = state.kitchenProfiles.find(p => p.name === name);
+        followBtn.innerHTML = profile && profile.following ? 
+            '<i class="fas fa-check"></i> FOLLOWING' : 
+            '<i class="fas fa-user-plus"></i> FOLLOW CHEF';
+        followBtn.dataset.profileName = name;
+        
+        openModal('profileModal');
+        
+        setTimeout(() => {
+            document.getElementById('pTipFill').style.width = tipGoal + '%';
+        }, 200);
+    }
+
+    function toggleFollow(profileId) {
+        event.stopPropagation();
+        
+        const profile = state.kitchenProfiles.find(p => p.id === profileId);
+        if(!profile) return;
+        
+        profile.following = !profile.following;
+        
+        if(profile.following) {
+            state.user.following.push(profileId);
+            showToast(`Now following ${profile.name}!`);
+            
+            // Add announcement
+            addAnnouncement('follow', `You're now following ${profile.name}`);
+            
+            // Update notification
+            state.kitchenNotifications = (state.kitchenNotifications || 0) + 1;
+            updateNotificationBadges();
+        } else {
+            state.user.following = state.user.following.filter(id => id !== profileId);
+            showToast(`Unfollowed ${profile.name}`);
+        }
+        
+        // Update UI
+        renderKitchenNetwork();
+        
+        // Update profile modal if open
+        const followBtn = document.getElementById('connectButton');
+        if(followBtn.dataset.profileName === profile.name) {
+            followBtn.innerHTML = profile.following ? 
+                '<i class="fas fa-check"></i> FOLLOWING' : 
+                '<i class="fas fa-user-plus"></i> FOLLOW CHEF';
+        }
+    }
+
+    function sendCompliment() {
+        const chefName = document.getElementById('pName').textContent;
+        showToast(`Compliment sent to ${chefName}'s kitchen!`);
+        closeModal('profileModal');
+        
+        // Add announcement
+        addAnnouncement('compliment', `Compliment sent to ${chefName}`);
+    }
+
+    // ============ CRITICS Q&A ============
+    function renderQuestions() {
+        const container = document.getElementById('questionsContainer');
+        container.innerHTML = '';
+        
+        state.questions.forEach((question, index) => {
+            const qaCard = document.createElement('div');
+            qaCard.className = 'qa-card';
+            
+            qaCard.innerHTML = `
+                <div class="upvote-box" onclick="voteQuestion(${question.id})">
+                    <i class="fas fa-chevron-up arrow ${question.voted ? 'active' : ''}"></i>
+                    <span class="count">${question.votes}</span>
+                </div>
+                <div>
+                    <div style="font-weight:900; font-size:1rem; margin-bottom:10px; color:white;">
+                        ${question.text}
+                    </div>
+                    <div style="font-size:0.8rem; color:var(--text-sub); margin-bottom:${question.answered ? '12px' : '0'};">
+                        Asked by <strong style="color:var(--accent);">${question.author}</strong> • ${question.time}
+                        ${question.urgent ? '<span style="background:var(--secondary); color:white; padding:3px 8px; border-radius:6px; margin-left:8px; font-size:0.7rem;">URGENT</span>' : ''}
+                    </div>
+                    ${question.answered ? `
+                        <div style="font-size:0.85rem; color:var(--text-sub); background: rgba(255,255,255,0.05); padding:12px 15px; border-radius:12px;">
+                            <i class="fas fa-reply" style="margin-right:10px; color:var(--primary);"></i>
+                            <strong style="color:var(--primary);">Critic's Answer:</strong> "${question.answer}"
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+            
+            container.appendChild(qaCard);
+        });
+    }
+
+    function voteQuestion(questionId) {
+        const question = state.questions.find(q => q.id === questionId);
+        if(!question) return;
+        
+        if(question.voted) {
+            question.votes--;
+            question.voted = false;
+        } else {
+            question.votes++;
+            question.voted = true;
+        }
+        
+        renderQuestions();
+        
+        // Add announcement for popular questions
+        if(question.votes > 30) {
+            addAnnouncement('question', `Popular question to critics: "${question.text.substring(0, 40)}..."`);
+        }
+    }
+
+    function submitQuestion() {
+        const input = document.getElementById('questionInput');
+        const text = input.value.trim();
+        
+        if(!text) {
+            showToast('Please enter a question');
+            return;
+        }
+        
+        const isAnonymous = document.getElementById('anonymousCheck').checked;
+        const isUrgent = document.getElementById('urgentCheck').checked;
+        const critic = document.getElementById('criticSelect').value;
+        
+        const criticNames = {
+            'gordon': 'Gordon Ramsey',
+            'wolfgang': 'Wolfgang Puck',
+            'massimo': 'Massimo Bottura',
+            'all': 'All Critics'
+        };
+        
+        const newQuestion = {
+            id: state.questions.length + 1,
+            text: text,
+            author: isAnonymous ? 'Anonymous Foodie' : state.user.name,
+            time: 'Just now',
+            votes: 0,
+            voted: false,
+            answered: false,
+            urgent: isUrgent,
+            critic: criticNames[critic]
+        };
+        
+        state.questions.unshift(newQuestion);
+        renderQuestions();
+        
+        showToast(`Question submitted to ${criticNames[critic]}!`);
+        closeModal('askModal');
+        
+        // Add announcement
+        addAnnouncement('question', `New question for critics: "${text.substring(0, 40)}..."`);
+        
+        // Update notification
+        state.criticsNotifications = (state.criticsNotifications || 0) + 1;
+        updateNotificationBadges();
+    }
+
+    // ============ CHEFS GRID ============
+    function renderChefs() {
+        const grid = document.getElementById('contestantGrid');
+        grid.innerHTML = '';
+        
+        const chefs = [
+            { name: 'Chef Kaito', img: 'https://images.unsplash.com/photo-1583394293214-28ded15ee548?w=200', match: 'Live Now • Main Course', active: true },
+            { name: 'Chef Marco', img: 'https://images.unsplash.com/photo-1577106263724-2c8e03bfe9f4?w=200', match: 'Live Now • Main Course', active: true },
+            { name: 'Chef Isabella', img: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=200', match: 'Next • Dessert Round', active: false },
+            { name: 'Chef Pierre', img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200', match: 'Next • Dessert Round', active: false },
+            { name: 'Chef Sofia', img: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=200', match: 'Appetizer Champion', active: false },
+            { name: 'Chef Hiroshi', img: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=200', match: 'Appetizer Runner-up', active: false }
+        ];
+        
+        chefs.forEach(chef => {
+            const card = document.createElement('div');
+            card.className = `c-card ${chef.active ? 'active' : ''}`;
+            card.onclick = () => openVote(chef.name, 'white', chef.name);
+            
+            card.innerHTML = `
+                <div class="c-img" style="background-image: url('${chef.img}');"></div>
+                <div class="c-info">
+                    <div class="c-title">${chef.name}</div>
+                    <div class="c-sub">${chef.match}</div>
+                </div>
+                <div class="c-vote-icon">TASTE</div>
+            `;
+            
+            grid.appendChild(card);
+        });
+    }
+
+    // ============ MENU SCHEDULE ============
+    function renderMenuSchedule() {
+        const agenda = [
+            { time: '6:00 PM', desc: 'Doors Open & Welcome Drinks', current: false },
+            { time: '7:00 PM', desc: 'Appetizer Round: 6 Chefs', current: false },
+            { time: '8:00 PM', desc: 'Main Course: Chef Kaito vs Chef Marco', current: true },
+            { time: '9:30 PM', desc: 'Dessert Championship', current: false },
+            { time: '10:15 PM', desc: 'Critics Tasting & Judging', current: false },
+            { time: '11:00 PM', desc: 'Awards Ceremony & Afterparty', current: false }
+        ];
+        
+        const list = document.getElementById('agendaList');
+        list.innerHTML = '';
+        
+        agenda.forEach(item => {
+            const li = document.createElement('li');
+            li.className = `agenda-item ${item.current ? 'current' : ''}`;
+            
+            li.innerHTML = `
+                <span class="agenda-time">${item.time}</span> 
+                <span class="agenda-desc">
+                    ${item.desc}
+                    ${item.current ? '<span class="current-session">LIVE NOW</span>' : ''}
+                </span>
+            `;
+            
+            list.appendChild(li);
+        });
+    }
+
+    // ============ LIVE UPDATES ============
+    function startLiveUpdates() {
+        // Update live stats every 3 seconds
+        setInterval(updateLiveStats, 3000);
+        
+        // Update match timer every second
+        setInterval(updateMatchTimer, 1000);
+        
+        // Update ticker every 10 seconds
+        setInterval(updateTicker, 10000);
+        
+        // Random announcements
+        setInterval(addRandomAnnouncement, 15000);
+        
+        // Random vote fluctuations
+        setInterval(simulateVoteFluctuations, 5000);
+    }
+
+    function updateLiveStats() {
+        // Update audience count
+        const audienceChange = getRandomInt(-3, 8);
+        state.liveAudience = Math.max(800, state.liveAudience + audienceChange);
+        document.getElementById('liveAudience').textContent = formatNumber(state.liveAudience);
+        
+        // Update total votes
+        const newVotes = getRandomInt(5, 25);
+        state.totalVotes += newVotes;
+        document.getElementById('totalVotes').textContent = formatNumber(state.totalVotes);
+        
+        // Update match info
+        if(Math.random() > 0.7) {
+            const matches = [
+                'MAIN COURSE • ROUND 3',
+                'DESSERT ROUND • STARTING SOON',
+                'JUDGES TASTING • FINAL ROUND'
+            ];
+            const current = document.getElementById('currentMatch');
+            if(current) {
+                current.textContent = matches[getRandomInt(0, matches.length - 1)];
+            }
+        }
+    }
+
+    function updateMatchTimer() {
+        const timer = document.getElementById('matchTimer');
+        if(!timer) return;
+        
+        const parts = timer.textContent.split(':');
+        let minutes = parseInt(parts[0]);
+        let seconds = parseInt(parts[1]);
+        
+        seconds++;
+        if(seconds >= 60) {
+            seconds = 0;
+            minutes++;
+        }
+        
+        timer.textContent = minutes.toString().padStart(2, '0') + ':' + seconds.toString().padStart(2, '0');
+        
+        // Update next session timer
+        const nextTimer = document.getElementById('liveTimer');
+        if(nextTimer) {
+            const nextMinutes = 60 - minutes;
+            nextTimer.textContent = `NEXT: ${nextMinutes > 0 ? nextMinutes + 'm' : 'SOON'}`;
+        }
+    }
+
+    function simulateVoteFluctuations() {
+        Object.keys(state.votes).forEach(chef => {
+            const change = getRandomInt(-2, 3);
+            state.votes[chef].count = Math.max(0, state.votes[chef].count + change);
+        });
+        
+        updateVotePercentages();
+        updateVoteUI();
+    }
+
+    // ============ ANNOUNCEMENTS ============
+    function updateTicker() {
+        const announcements = [
+            { icon: 'utensils', text: 'Welcome to THE FEAST Culinary Battle!' },
+            { icon: 'fire', text: 'Chef Kaito is preparing his signature Wagyu Skewer' },
+            { icon: 'wine-bottle', text: 'New wine pairing suggestions available' },
+            { icon: 'star', text: 'Critics are tasting the dishes now' },
+            { icon: 'bolt', text: 'Power votes can boost your favorite chef' },
+            { icon: 'shopping-basket', text: 'Order Chef Marco\'s Lobster Ravioli now' },
+            { icon: 'heart', text: 'Tip your favorite chef to show support' },
+            { icon: 'trophy', text: '$25,000 prize pool for the champion' }
+        ];
+        
+        const ticker = document.getElementById('announcementTicker');
+        let tickerHTML = '';
+        
+        const shuffled = [...announcements].sort(() => 0.5 - Math.random());
+        const selected = shuffled.slice(0, 3);
+        
+        selected.forEach(ann => {
+            tickerHTML += `<i class="fas fa-${ann.icon}"></i> ${ann.text} • `;
+        });
+        
+        ticker.innerHTML = tickerHTML;
+    }
+
+    function addRandomAnnouncement() {
+        const types = ['vote', 'order', 'tip', 'cooking', 'general'];
+        const type = types[getRandomInt(0, types.length - 1)];
+        
+        switch(type) {
+            case 'vote':
+                const chefs = Object.keys(state.votes);
+                const chef = chefs[getRandomInt(0, chefs.length - 1)];
+                addAnnouncement('vote', `${chef} received ${getRandomInt(3, 10)} new taste votes!`);
+                break;
+            case 'order':
+                const dishes = ['Wagyu Skewer', 'Lobster Ravioli', 'Truffle Pasta', 'Foie Gras'];
+                const dish = dishes[getRandomInt(0, dishes.length - 1)];
+                addAnnouncement('order', `New order for ${dish} received!`);
+                break;
+            case 'cooking':
+                const actions = ['is plating now', 'is adding final touches', 'just started cooking', 'is preparing sauce'];
+                const action = actions[getRandomInt(0, actions.length - 1)];
+                const cookingChef = Math.random() > 0.5 ? 'Chef Kaito' : 'Chef Marco';
+                addAnnouncement('cooking', `${cookingChef} ${action}`);
+                break;
+        }
+    }
+
+    function addAnnouncement(type, text) {
+        switch(type) {
+            case 'vote':
+                state.battleNotifications = (state.battleNotifications || 0) + 1;
+                break;
+            case 'order':
+                state.kitchenNotifications = (state.kitchenNotifications || 0) + 1;
+                break;
+            case 'question':
+                state.criticsNotifications = (state.criticsNotifications || 0) + 1;
+                break;
+        }
+        
+        updateNotificationBadges();
+        
+        console.log(`Culinary Announcement: ${text}`);
+    }
+
+    // ============ NOTIFICATIONS ============
+    function updateNotificationBadges() {
+        // Battle notifications
+        const battleBadge = document.getElementById('battleNotification');
+        const navBattleBadge = document.getElementById('navBattleBadge');
+        
+        if(state.battleNotifications > 0) {
+            battleBadge.style.display = 'block';
+            navBattleBadge.style.display = 'flex';
+            navBattleBadge.textContent = state.battleNotifications > 9 ? '9+' : state.battleNotifications;
+        } else {
+            battleBadge.style.display = 'none';
+            navBattleBadge.style.display = 'none';
+        }
+        
+        // Kitchen notifications
+        const navKitchenBadge = document.getElementById('navKitchenBadge');
+        
+        if(state.kitchenNotifications > 0) {
+            navKitchenBadge.style.display = 'flex';
+            navKitchenBadge.textContent = state.kitchenNotifications > 9 ? '9+' : state.kitchenNotifications;
+        } else {
+            navKitchenBadge.style.display = 'none';
+        }
+        
+        // Critics notifications
+        const criticsBadge = document.getElementById('criticsNotification');
+        if(state.criticsNotifications > 0) {
+            criticsBadge.style.display = 'block';
+        } else {
+            criticsBadge.style.display = 'none';
+        }
+    }
+
+    function updateNotifications() {
+        // Simulate random notifications
+        if(Math.random() > 0.7) {
+            state.battleNotifications = (state.battleNotifications || 0) + 1;
+        }
+        if(Math.random() > 0.8) {
+            state.kitchenNotifications = (state.kitchenNotifications || 0) + 1;
+        }
+        if(Math.random() > 0.6) {
+            state.criticsNotifications = (state.criticsNotifications || 0) + 1;
+        }
+        
+        updateNotificationBadges();
+        
+        setTimeout(updateNotifications, getRandomInt(10000, 30000));
+    }
+
+    // ============ QUICK ACTIONS ============
+    function openQuickActions() {
+        const actions = [
+            { text: 'Order Dish', icon: 'shopping-basket', action: () => openModal('contributeModal') },
+            { text: 'Tip Chef', icon: 'heart', action: () => openTipModal() },
+            { text: 'View Menu', icon: 'calendar-alt', action: () => openModal('agendaModal') },
+            { text: 'Ask Critic', icon: 'question-circle', action: () => openModal('askModal') }
+        ];
+        
+        const menu = document.createElement('div');
+        menu.style.cssText = `
+            position: fixed;
+            bottom: 160px;
+            right: 25px;
+            background: var(--modal-bg);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.6);
+            z-index: 199;
+            min-width: 220px;
+            border: 2px solid var(--border);
+        `;
+        
+        actions.forEach(action => {
+            const btn = document.createElement('div');
+            btn.style.cssText = `
+                display: flex;
+                align-items: center;
+                gap: 15px;
+                padding: 15px 18px;
+                cursor: pointer;
+                border-radius: 12px;
+                transition: background 0.2s;
+                color: white;
+                font-weight: 600;
+            `;
+            btn.onmouseenter = () => btn.style.background = 'rgba(255,255,255,0.1)';
+            btn.onmouseleave = () => btn.style.background = 'transparent';
+            btn.onclick = () => {
+                action.action();
+                document.body.removeChild(menu);
+            };
+            
+            btn.innerHTML = `
+                <i class="fas fa-${action.icon}" style="color: var(--primary); font-size: 1.2rem;"></i>
+                <span style="font-weight: 700;">${action.text}</span>
+            `;
+            
+            menu.appendChild(btn);
+        });
+        
+        const closeBtn = document.createElement('div');
+        closeBtn.style.cssText = `
+            text-align: center;
+            padding: 12px;
+            margin-top: 15px;
+            color: var(--text-sub);
+            font-size: 0.85rem;
+            cursor: pointer;
+            border-top: 1px solid var(--border);
+            font-weight: 700;
+        `;
+        closeBtn.textContent = 'Close';
+        closeBtn.onclick = () => document.body.removeChild(menu);
+        menu.appendChild(closeBtn);
+        
+        document.body.appendChild(menu);
+        
+        setTimeout(() => {
+            const closeOnClick = (e) => {
+                if(!menu.contains(e.target) && !e.target.closest('.quick-action-fab')) {
+                    document.body.removeChild(menu);
+                    document.removeEventListener('click', closeOnClick);
+                }
+            };
+            document.addEventListener('click', closeOnClick);
+        }, 100);
+    }
+
+    // ============ UI HELPERS ============
+    function showToast(message) {
+        const existing = document.querySelector('.toast');
+        if(existing) existing.remove();
+        
+        const toast = document.createElement('div');
+        toast.className = 'toast';
+        toast.style.cssText = `
+            position: fixed;
+            top: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            color: #1a0f0f;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-weight: 900;
+            z-index: 1000;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+            animation: slideDown 0.3s ease;
+            text-align: center;
+            min-width: 250px;
+            max-width: 300px;
+        `;
+        
+        toast.textContent = message;
+        document.body.appendChild(toast);
+        
+        setTimeout(() => {
+            toast.style.animation = 'slideUp 0.3s ease';
+            setTimeout(() => {
+                if(toast.parentNode) {
+                    toast.parentNode.removeChild(toast);
+                }
+            }, 300);
+        }, 3000);
+    }
+
+    // Add CSS for animations
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes slideDown {
+            from { transform: translateX(-50%) translateY(-20px); opacity: 0; }
+            to { transform: translateX(-50%) translateY(0); opacity: 1; }
+        }
+        @keyframes slideUp {
+            from { transform: translateX(-50%) translateY(0); opacity: 1; }
+            to { transform: translateX(-50%) translateY(-20px); opacity: 0; }
+        }
+        
+        .fa-user-chef:before {
+            content: "\\f806";
+            font-family: "Font Awesome 5 Free";
+        }
+    `;
+    document.head.appendChild(style);
+</script>
+</body>
+</html>
