@@ -1,0 +1,2296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>🎧 LIVE: SOUND CLASH OS - DJ Battle Finals</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        /* --- CLUB THEME VARIABLES --- */
+        :root {
+            --bg-color: #0f0518;       /* Deep Club Violet */
+            --card-bg: rgba(20, 20, 30, 0.9);        
+            --modal-bg: rgba(25, 15, 35, 0.95);
+            --primary: #d946ef;        /* Neon Pink */
+            --accent: #06b6d4;         /* Cyber Cyan */
+            --secondary: #ef4444;      /* Fire Red */
+            --gold: #fbbf24;           
+            --text-main: #ffffff;      
+            --text-sub: #a0aec0;       
+            --border: #374151;         
+            --input-bg: #1a0b24;
+            --success: #10b981;
+            --live-pulse: #ef4444;
+            
+            --font-head: 'Orbitron', sans-serif;
+            --font-body: 'Inter', sans-serif;
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body { 
+            background: linear-gradient(135deg, #0f0518 0%, #000000 100%);
+            color: var(--text-main); 
+            font-family: var(--font-body); 
+            margin: 0; padding-bottom: 90px;
+            transition: background 0.3s;
+            overflow-x: hidden;
+        }
+        
+        .app-container { 
+            max-width: 480px; margin: 0 auto; min-height: 100vh; 
+            background: var(--bg-color); 
+            position: relative; overflow-x: hidden;
+            box-shadow: 0 0 60px rgba(217, 70, 239, 0.15);
+        }
+        
+        /* LIVE EVENT HEADER */
+        .live-event-header { 
+            background: linear-gradient(90deg, rgba(25, 15, 35, 0.95) 0%, rgba(15, 5, 24, 0.95) 100%);
+            padding: 12px 20px; 
+            position: sticky; top: 0; z-index: 100; 
+            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 2px solid var(--primary);
+            box-shadow: 0 5px 20px rgba(217, 70, 239, 0.3);
+            backdrop-filter: blur(10px);
+        }
+        .logo { 
+            font-family: var(--font-head); 
+            font-size: 1.6rem; 
+            letter-spacing: 1.5px; 
+            text-transform: uppercase; 
+            color: white; 
+            text-shadow: 0 0 10px rgba(217, 70, 239, 0.7);
+        }
+        .logo span { color: var(--accent); }
+        
+        .live-status {
+            display: flex; align-items: center; gap: 10px;
+        }
+        .live-badge { 
+            background: linear-gradient(90deg, #d946ef, #f472b6);
+            color: white; 
+            font-size: 0.7rem; 
+            font-weight: 900; 
+            padding: 6px 12px; 
+            border-radius: 20px; 
+            display: flex; 
+            align-items: center; 
+            gap: 6px; 
+            text-transform: uppercase;
+            box-shadow: 0 0 15px rgba(217, 70, 239, 0.6);
+            animation: pulse-glow 1.5s infinite;
+        }
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 15px rgba(217, 70, 239, 0.6); }
+            50% { box-shadow: 0 0 25px rgba(217, 70, 239, 0.9); }
+        }
+        
+        .live-timer {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--accent);
+            background: rgba(6, 182, 212, 0.1);
+            padding: 4px 10px;
+            border-radius: 10px;
+            border: 1px solid var(--accent);
+        }
+
+        /* LIVE ANNOUNCEMENT TICKER */
+        .announcement-ticker {
+            background: rgba(217, 70, 239, 0.1);
+            border-bottom: 1px solid rgba(217, 70, 239, 0.3);
+            padding: 8px 0;
+            overflow: hidden;
+            white-space: nowrap;
+            position: relative;
+        }
+        .ticker-content {
+            display: inline-block;
+            animation: ticker 30s linear infinite;
+            color: var(--accent);
+            font-weight: 600;
+            font-size: 0.8rem;
+            padding-left: 100%;
+        }
+        .ticker-content i { margin: 0 10px; color: var(--primary); }
+        @keyframes ticker {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-100%); }
+        }
+
+        /* HERO DASHBOARD - CLUB STYLE */
+        .hero-dashboard-live {
+            background: radial-gradient(ellipse at center, #1a0b24 0%, #0f0518 70%);
+            padding: 25px 20px 20px; 
+            text-align: center; 
+            border-bottom: 1px solid var(--border);
+            position: relative;
+        }
+        .hero-dashboard-live::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--accent), var(--secondary));
+        }
+        
+        .hero-title { 
+            font-family: var(--font-head); 
+            margin: 0; 
+            font-size: 3.2rem; 
+            line-height: 0.9; 
+            color: white; 
+            text-transform: uppercase; 
+            text-shadow: 0 0 20px rgba(217, 70, 239, 0.5);
+        }
+        .hero-sub { 
+            color: var(--accent); 
+            font-weight: 900; 
+            letter-spacing: 3px; 
+            font-size: 0.75rem; 
+            margin: 10px 0 20px; 
+            text-transform: uppercase;
+        }
+        
+        .live-stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 25px 0 20px;
+            background: rgba(255,255,255,0.03);
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid rgba(217, 70, 239, 0.3);
+            backdrop-filter: blur(5px);
+        }
+        .stat-item {
+            text-align: center;
+            flex: 1;
+        }
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: white;
+            display: block;
+            line-height: 1;
+        }
+        .stat-label {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            color: var(--text-sub);
+            font-weight: 700;
+            margin-top: 5px;
+            display:block;
+        }
+        .stat-icon {
+            color: var(--primary);
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+
+        .main-cta-btn { 
+            width: 100%; 
+            padding: 18px; 
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            color: white; 
+            border: none; 
+            border-radius: 12px; 
+            font-weight: 900; 
+            font-size: 1rem; 
+            margin: 15px 0 10px; 
+            cursor: pointer; 
+            transition: 0.3s; 
+            text-transform: uppercase;
+            box-shadow: 0 5px 25px rgba(217, 70, 239, 0.4);
+            font-family: var(--font-body);
+            position: relative;
+            overflow: hidden;
+        }
+        .main-cta-btn:active { transform: scale(0.98); }
+        .main-cta-btn:hover { box-shadow: 0 8px 30px rgba(217, 70, 239, 0.6); }
+
+        /* REVENUE RACK - CLUB UPGRADES */
+        .contribution-section {
+            padding: 20px 0 25px 20px; 
+            margin: 25px 20px; 
+            background: var(--card-bg); 
+            border-radius: 16px;
+            border: 2px solid var(--primary);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            position: relative;
+            backdrop-filter: blur(5px);
+        }
+        .section-header { 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+            margin-bottom: 20px; 
+            color: white; 
+            font-weight: 800; 
+            font-size: 1rem; 
+        }
+        .section-header i { color: var(--primary); font-size: 1.1rem; }
+        
+        .ticket-row { 
+            display: flex; 
+            gap: 12px; 
+            overflow-x: auto; 
+            padding-bottom: 5px; 
+            padding-right: 20px; 
+            scrollbar-width: none; 
+        }
+        .ticket-card {
+            min-width: 140px; 
+            padding: 18px 12px; 
+            border-radius: 12px; 
+            border: 1px solid rgba(217, 70, 239, 0.3);
+            background: rgba(15, 5, 24, 0.7); 
+            cursor: pointer; 
+            text-align: center; 
+            transition: 0.2s;
+            flex-shrink: 0;
+        }
+        .ticket-card:active { transform: scale(0.97); }
+        .ticket-card.vip { 
+            border: 2px solid var(--gold); 
+            background: linear-gradient(145deg, rgba(251, 191, 36, 0.15), transparent); 
+            position: relative;
+        }
+        .vip-badge {
+            position: absolute;
+            top: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--gold);
+            color: black;
+            font-size: 0.6rem;
+            font-weight: 900;
+            padding: 2px 10px;
+            border-radius: 10px;
+        }
+        
+        .t-price { font-size: 1.6rem; font-weight: 900; color: white; margin-bottom: 5px; }
+        .t-label { font-size: 0.75rem; color: var(--text-sub); margin-bottom: 15px; }
+        .t-btn { 
+            font-size: 0.8rem; 
+            font-weight: 900; 
+            padding: 10px 0; 
+            border-radius: 25px; 
+            border: none; 
+            background: var(--primary); 
+            color: white; 
+            width: 100%; 
+            cursor: pointer; 
+            transition: 0.2s;
+        }
+        .t-btn:hover { opacity: 0.9; }
+        .vip .t-btn { background: var(--gold); color: black; }
+
+        /* TABS - CLUB STYLE */
+        .nav-tabs { 
+            display: flex; 
+            background: var(--card-bg); 
+            padding: 0 5px; 
+            border-bottom: 1px solid var(--border); 
+            overflow-x: auto;
+            position: sticky;
+            top: 73px;
+            z-index: 90;
+            backdrop-filter: blur(5px);
+        }
+        .tab { 
+            padding: 18px 20px; 
+            color: var(--text-sub); 
+            font-weight: 800; 
+            font-size: 0.9rem; 
+            cursor: pointer; 
+            white-space: nowrap; 
+            border-bottom: 3px solid transparent; 
+            transition: 0.2s;
+            flex: 1;
+            text-align: center;
+        }
+        .tab.active { 
+            color: white; 
+            border-bottom: 3px solid var(--primary);
+            background: rgba(217, 70, 239, 0.05);
+        }
+        .tab-notification {
+            position: absolute;
+            top: 8px;
+            right: 10px;
+            width: 8px;
+            height: 8px;
+            background: var(--secondary);
+            border-radius: 50%;
+            animation: pulse 1s infinite;
+        }
+
+        /* SECTIONS */
+        .view-section { display: none; padding: 20px; animation: fadeIn 0.4s ease; }
+        .view-section.active { display: block; }
+
+        /* --- DJ BATTLE ENGINE --- */
+        
+        /* Live Match - DJ BATTLE */
+        .battle-header { 
+            text-align: center; 
+            margin-bottom: 20px; 
+            color: var(--accent); 
+            font-size: 0.85rem; 
+            text-transform: uppercase; 
+            letter-spacing: 1.5px; 
+            font-weight: 900; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .live-indicator {
+            background: var(--primary);
+            color: white;
+            font-size: 0.6rem;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-weight: 900;
+            animation: pulse 1.5s infinite;
+        }
+        
+        .battle-container { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 15px; 
+            margin-bottom: 25px; 
+        }
+        .battle-card { 
+            background: var(--card-bg); 
+            padding: 20px 15px; 
+            text-align: center; 
+            border-radius: 16px; 
+            border: 2px solid var(--border); 
+            position: relative;
+            transition: 0.3s;
+            backdrop-filter: blur(5px);
+        }
+        .battle-card:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        .bc-pink { border-top: 5px solid var(--primary); }
+        .bc-cyan { border-top: 5px solid var(--accent); }
+        
+        .vote-percentage {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: white;
+        }
+        .bc-pink .vote-percentage { color: var(--primary); }
+        .bc-cyan .vote-percentage { color: var(--accent); }
+        
+        .bc-avatar { 
+            width: 80px; 
+            height: 80px; 
+            background-size: cover; 
+            margin: 0 auto 15px; 
+            border-radius: 50%; 
+            border: 4px solid var(--bg-color); 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        .bc-name { 
+            font-family: var(--font-head); 
+            font-size: 1.6rem; 
+            line-height: 1; 
+            margin: 0; 
+            text-transform: uppercase; 
+            color: white;
+        }
+        .bc-role { 
+            font-size: 0.75rem; 
+            color: var(--text-sub); 
+            margin-bottom: 15px; 
+            font-weight: 600;
+        }
+        .vote-progress {
+            width: 100%;
+            height: 8px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 4px;
+            margin: 12px 0;
+            overflow: hidden;
+        }
+        .vote-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 1s ease-out;
+        }
+        .bc-pink .vote-fill { background: var(--primary); }
+        .bc-cyan .vote-fill { background: var(--accent); }
+        
+        .bc-btn { 
+            width: 100%; 
+            padding: 12px; 
+            font-weight: 900; 
+            border: none; 
+            cursor: pointer; 
+            text-transform: uppercase; 
+            border-radius: 10px; 
+            font-size: 0.85rem; 
+            color: white; 
+            transition: 0.2s;
+        }
+        .bc-btn:active { transform: scale(0.98); }
+        .btn-pink { 
+            background: var(--primary); 
+            box-shadow: 0 0 15px rgba(217, 70, 239, 0.3);
+        }
+        .btn-cyan { 
+            background: var(--accent); 
+            box-shadow: 0 0 15px rgba(6, 182, 212, 0.3);
+        }
+
+        /* Contestants Grid */
+        .grid-header { 
+            font-size: 1rem; 
+            font-weight: 900; 
+            color: white; 
+            margin: 30px 0 20px; 
+            border-bottom: 1px solid var(--border); 
+            padding-bottom: 12px; 
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .contestant-grid { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 12px; 
+        }
+        
+        .c-card { 
+            background: var(--card-bg); 
+            padding: 15px; 
+            border-radius: 12px; 
+            border: 1px solid var(--border); 
+            display: flex; 
+            align-items: center; 
+            gap: 12px; 
+            cursor: pointer; 
+            transition: 0.2s; 
+            backdrop-filter: blur(5px);
+        }
+        .c-card:active { transform: scale(0.98); }
+        .c-card.active { border-color: var(--primary); background: rgba(217, 70, 239, 0.05); }
+        .c-img { 
+            width: 50px; 
+            height: 50px; 
+            border-radius: 50%; 
+            background-size: cover; 
+            background-color: #333; 
+            border: 2px solid var(--border);
+        }
+        .c-info { flex: 1; }
+        .c-title { font-weight: 900; font-size: 0.9rem; line-height: 1.1; color: white; }
+        .c-sub { font-size: 0.7rem; color: var(--text-sub); }
+        .c-vote-icon { 
+            color: var(--primary); 
+            font-size: 0.75rem; 
+            font-weight: 900;
+            border: 1px solid var(--primary); 
+            padding: 6px 12px; 
+            border-radius: 20px; 
+            transition: 0.2s;
+        }
+        .c-vote-icon:hover { background: var(--primary); color: white; }
+
+        /* VIP LIST GRID */
+        .network-grid { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 15px; 
+        }
+        .profile-card-grid { 
+            background: var(--card-bg); 
+            padding: 20px 15px; 
+            border-radius: 16px; 
+            text-align: center; 
+            border: 1px solid var(--border); 
+            cursor: pointer; 
+            transition: 0.2s;
+            backdrop-filter: blur(5px);
+        }
+        .profile-card-grid:active { transform: scale(0.98); }
+        .pcg-avatar { 
+            width: 70px; 
+            height: 70px; 
+            background-color: var(--bg-color); 
+            border-radius: 50%; 
+            margin: 0 auto 15px; 
+            background-size: cover; 
+            border: 3px solid var(--border); 
+        }
+        .pcg-name { 
+            font-weight: 900; 
+            font-size: 1rem; 
+            margin-bottom: 5px; 
+            color: white; 
+        }
+        .pcg-role { 
+            font-size: 0.75rem; 
+            color: var(--text-sub); 
+            text-transform: uppercase; 
+            margin-bottom: 20px; 
+            font-weight: 600; 
+        }
+        .pcg-btn { 
+            background: transparent; 
+            border: 1px solid var(--primary); 
+            color: var(--primary); 
+            padding: 10px 20px; 
+            border-radius: 25px; 
+            font-size: 0.8rem; 
+            font-weight: 900; 
+            transition: 0.2s;
+        }
+        .pcg-btn:hover { background: var(--primary); color: white; }
+
+        /* REQUEST LINE SECTION */
+        .qa-card { 
+            background: var(--card-bg); 
+            padding: 18px; 
+            border-radius: 12px; 
+            margin-bottom: 12px; 
+            border: 1px solid var(--border); 
+            display: flex; 
+            gap: 15px; 
+            transition: 0.2s;
+            backdrop-filter: blur(5px);
+        }
+        .qa-card:active { transform: scale(0.99); }
+        .upvote-box { 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            min-width: 45px; 
+            justify-content: center; 
+        }
+        .arrow { 
+            font-size: 1.4rem; 
+            color: var(--text-sub); 
+            cursor: pointer; 
+            transition: 0.2s;
+        }
+        .arrow:active { transform: scale(1.2); }
+        .arrow.active { color: var(--primary); }
+        .count { 
+            font-weight: 900; 
+            font-size: 1rem; 
+            margin-top: 5px; 
+            color: white;
+        }
+
+        /* FOOTER NAV - CLUB STYLE */
+        .bottom-nav { 
+            position: fixed; 
+            bottom: 0; 
+            width: 100%; 
+            max-width: 480px; 
+            background: rgba(25, 15, 35, 0.95); 
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(217, 70, 239, 0.3); 
+            display: flex; 
+            justify-content: space-around; 
+            padding: 15px 0; 
+            z-index: 100; 
+            box-shadow: 0 -5px 30px rgba(0,0,0,0.3); 
+        }
+        .nav-item { 
+            text-align: center; 
+            color: var(--text-sub); 
+            font-size: 0.7rem; 
+            cursor: pointer; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            gap: 6px; 
+            font-weight: 800; 
+            position: relative;
+            transition: 0.2s;
+        }
+        .nav-item:active { transform: scale(0.95); }
+        .nav-item.active { color: white; }
+        .nav-item i { font-size: 1.4rem; }
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--primary);
+            color: white;
+            font-size: 0.6rem;
+            font-weight: 900;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: pulse 1.5s infinite;
+        }
+
+        /* QUICK ACTIONS FAB */
+        .quick-action-fab {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 5px 25px rgba(217, 70, 239, 0.5);
+            z-index: 99;
+            transition: 0.3s;
+        }
+        .quick-action-fab:active { 
+            transform: scale(0.9); 
+            box-shadow: 0 2px 15px rgba(217, 70, 239, 0.7);
+        }
+
+        /* --- MODALS --- */
+        .modal { 
+            display: none; 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            background: rgba(0,0,0,0.95); 
+            z-index: 200; 
+            justify-content: center; 
+            align-items: center; 
+            backdrop-filter: blur(10px); 
+        }
+        .modal-box { 
+            width: 90%; 
+            max-width: 400px; 
+            background: var(--modal-bg); 
+            padding: 0; 
+            border-radius: 20px; 
+            position: relative; 
+            border-top: 5px solid var(--primary); 
+            animation: slideUp 0.3s; 
+            overflow: hidden; 
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6); 
+            backdrop-filter: blur(10px);
+        }
+        
+        .m-header { 
+            padding: 25px 20px; 
+            border-bottom: 1px solid var(--border); 
+            position: relative; 
+            text-align: center; 
+            background: rgba(0,0,0,0.2);
+        }
+        .m-title { 
+            margin: 0; 
+            color: white; 
+            font-size: 1.4rem; 
+            font-weight: 900; 
+            text-transform: uppercase; 
+        }
+        .m-close { 
+            position: absolute; 
+            top: 20px; 
+            right: 25px; 
+            font-size: 2rem; 
+            color: var(--text-sub); 
+            cursor: pointer; 
+            transition: 0.2s;
+        }
+        .m-close:active { transform: scale(1.2); }
+        .m-body { padding: 30px; }
+
+        /* VOTE MODAL */
+        .vote-tabs { 
+            display: flex; 
+            background: var(--bg-color); 
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+        .v-tab { 
+            flex: 1; 
+            padding: 18px; 
+            text-align: center; 
+            font-size: 0.85rem; 
+            font-weight: 900; 
+            color: var(--text-sub); 
+            cursor: pointer; 
+            transition: 0.2s;
+        }
+        .v-tab:active { transform: scale(0.98); }
+        .v-tab.active { 
+            color: white; 
+            background: rgba(217, 70, 239, 0.2);
+            border-bottom: 3px solid var(--primary); 
+        }
+        
+        .power-opt { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            padding: 20px; 
+            background: var(--bg-color); 
+            border: 2px solid var(--border); 
+            border-radius: 12px; 
+            margin-bottom: 15px; 
+            cursor: pointer; 
+            transition: 0.2s; 
+        }
+        .power-opt:active { transform: scale(0.98); }
+        .power-opt:hover, .power-opt.selected { 
+            border-color: var(--primary); 
+            background: rgba(217, 70, 239, 0.1); 
+            box-shadow: 0 5px 15px rgba(217, 70, 239, 0.2);
+        }
+
+        .submit-action { 
+            background: linear-gradient(90deg, var(--primary), var(--accent)); 
+            color: white; 
+            border: none; 
+            padding: 18px; 
+            width: 100%; 
+            font-weight: 900; 
+            border-radius: 12px; 
+            cursor: pointer; 
+            text-transform: uppercase; 
+            margin-top: 15px; 
+            font-size: 1rem;
+            transition: 0.2s;
+            box-shadow: 0 5px 20px rgba(217, 70, 239, 0.3);
+        }
+        .submit-action:active { transform: scale(0.98); }
+
+        /* PROFILE MODAL */
+        .profile-header-lg { 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            margin-bottom: 25px; 
+        }
+        .avatar-lg { 
+            width: 110px; 
+            height: 110px; 
+            background: var(--bg-color); 
+            border-radius: 50%; 
+            margin-bottom: 20px; 
+            background-size: cover; 
+            border: 4px solid var(--border); 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        .goal-wrapper { 
+            width: 100%; 
+            margin: 25px 0 30px; 
+            text-align: left; 
+            background: var(--bg-color);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+        .goal-header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 15px; 
+        }
+        .contribute-btn-mini { 
+            background: var(--primary); 
+            color: white; 
+            border: none; 
+            padding: 8px 16px; 
+            border-radius: 20px; 
+            font-size: 0.75rem; 
+            font-weight: 900; 
+            cursor: pointer; 
+            transition: 0.2s;
+        }
+        .contribute-btn-mini:active { transform: scale(0.95); }
+        .goal-bar-bg { 
+            width: 100%; 
+            height: 12px; 
+            background: var(--border); 
+            border-radius: 6px; 
+            overflow: hidden; 
+            margin-bottom: 10px; 
+        }
+        .goal-fill { 
+            height: 100%; 
+            background: linear-gradient(90deg, var(--primary), var(--accent)); 
+            width: 0%; 
+            transition: width 1s ease-out; 
+        }
+
+        /* AGENDA LIST */
+        .agenda-list { 
+            list-style: none; 
+            padding: 0; 
+            margin: 0; 
+            text-align: left; 
+        }
+        .agenda-item { 
+            padding: 20px 0; 
+            border-bottom: 1px solid var(--border); 
+            color: white; 
+            display: flex; 
+            gap: 20px; 
+            align-items: flex-start;
+        }
+        .agenda-item.current {
+            background: rgba(217, 70, 239, 0.05);
+            border-left: 5px solid var(--primary);
+            margin-left: -30px;
+            padding-left: 25px;
+            border-radius: 0 10px 10px 0;
+        }
+        .agenda-time { 
+            font-weight: 900; 
+            color: var(--primary); 
+            white-space: nowrap; 
+            font-size: 1rem; 
+            min-width: 80px; 
+        }
+        .agenda-desc { 
+            font-size: 0.95rem; 
+            font-weight: 600; 
+            flex: 1;
+        }
+        .current-session {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 900;
+            padding: 3px 10px;
+            border-radius: 10px;
+            margin-left: 10px;
+            animation: pulse 2s infinite;
+        }
+
+        /* ASK TEXTAREA */
+        .ask-textarea {
+            width: 100%;
+            height: 120px;
+            background: var(--bg-color);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 15px;
+            color: white;
+            font-family: var(--font-body);
+            font-size: 1rem;
+            margin-bottom: 20px;
+            resize: none;
+        }
+
+        /* CONTRIBUTE MODAL */
+        .contribute-modal-content {
+            text-align: center;
+        }
+        .tier-option {
+            background: var(--bg-color);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .tier-option.selected {
+            border-color: var(--primary);
+            background: rgba(217, 70, 239, 0.1);
+        }
+        .tier-price {
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        /* FIRE ANIMATION */
+        .fire-animation {
+            position: fixed;
+            pointer-events: none;
+            z-index: 1000;
+            font-size: 2rem;
+            animation: fireRise 1.5s ease-out forwards;
+        }
+        
+        @keyframes fireRise {
+            0% { transform: translateY(0) scale(0.5); opacity: 1; }
+            100% { transform: translateY(-100px) scale(1.5); opacity: 0; }
+        }
+
+        @keyframes fadeIn { 
+            from { opacity: 0; transform: translateY(20px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
+        @keyframes slideUp { 
+            from { transform: translateY(30px); opacity: 0; } 
+            to { transform: translateY(0); opacity: 1; } 
+        }
+        @keyframes pulse { 
+            0%, 100% { opacity: 1; } 
+            50% { opacity: 0.6; } 
+        }
+    </style>
+</head>
+<body data-theme="dark">
+
+<div class="app-container">
+    <!-- LIVE EVENT HEADER -->
+    <div class="live-event-header">
+        <div class="logo">🎧 SOUND <span>CLASH</span></div>
+        <div class="live-status">
+            <div class="live-timer" id="liveTimer">NEXT: 12:30 AM</div>
+            <div class="live-badge"><i class="fas fa-circle"></i> LIVE NOW</div>
+        </div>
+    </div>
+
+    <!-- LIVE ANNOUNCEMENT TICKER -->
+    <div class="announcement-ticker">
+        <div class="ticker-content" id="announcementTicker">
+            <!-- Ticker content will be populated by JS -->
+        </div>
+    </div>
+
+    <!-- HERO DASHBOARD LIVE -->
+    <div class="hero-dashboard-live">
+        <div class="hero-sub">GRAND FINALS • FEB 28 • VELVET ROOM</div>
+        <h1 class="hero-title">DJ K-OS<br>VS<br>DJ VIBE</h1>
+        
+        <div class="live-stats">
+            <div class="stat-item">
+                <div class="stat-icon"><i class="fas fa-users"></i></div>
+                <div class="stat-value" id="liveAudience">1,247</div>
+                <div class="stat-label">Club Capacity</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-icon"><i class="fas fa-fire"></i></div>
+                <div class="stat-value" id="totalVotes">8,942</div>
+                <div class="stat-label">Hype Level</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-icon"><i class="fas fa-clock"></i></div>
+                <div class="stat-value" id="matchTimer">12:45</div>
+                <div class="stat-label">Set Time Remaining</div>
+            </div>
+        </div>
+
+        <button class="main-cta-btn" onclick="openModal('contributeModal')">
+            <i class="fas fa-ticket-alt"></i> GET ENTRY PASS
+        </button>
+    </div>
+
+    <!-- REVENUE RACK -->
+    <div class="contribution-section">
+        <div class="section-header">
+            <i class="fas fa-crown"></i> CLUB UPGRADES
+        </div>
+        <div class="ticket-row">
+            <div class="ticket-card" onclick="openTierSelection(20, 'Cover Charge')">
+                <div class="t-price">$20</div>
+                <div class="t-label">Cover Charge</div>
+                <button class="t-btn">ENTER</button>
+            </div>
+            <div class="ticket-card" onclick="openTierSelection(10, 'Power Hype')">
+                <div class="t-price">$10</div>
+                <div class="t-label">Power Hype</div>
+                <button class="t-btn">BOOST</button>
+            </div>
+            <div class="ticket-card vip" onclick="openTierSelection(150, 'Bottle Service')">
+                <div class="vip-badge">VIP</div>
+                <div class="t-price">$150</div>
+                <div class="t-label">Bottle Service</div>
+                <button class="t-btn">RESERVE</button>
+            </div>
+            <div class="ticket-card" onclick="openTierSelection(50, 'Buy a Round')">
+                <div class="t-price">$50</div>
+                <div class="t-label">Buy a Round</div>
+                <button class="t-btn">CHEERS!</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN NAV TABS -->
+    <div class="nav-tabs">
+        <div class="tab active" onclick="switchTab('pitch', this)">
+            <i class="fas fa-fire"></i> THE BATTLE
+            <div class="tab-notification" id="pitchNotification"></div>
+        </div>
+        <div class="tab" onclick="switchTab('network', this)">
+            <i class="fas fa-crown"></i> VIP LIST
+            <div class="tab-notification" id="networkNotification"></div>
+        </div>
+        <div class="tab" onclick="switchTab('qa', this)">
+            <i class="fas fa-music"></i> REQUEST LINE
+            <div class="tab-notification" id="qaNotification"></div>
+        </div>
+    </div>
+
+    <!-- TAB 1: DJ BATTLE ENGINE -->
+    <div id="pitch" class="view-section active">
+        <!-- Live Match -->
+        <div class="battle-header">
+            <div class="live-indicator">LIVE NOW</div>
+            <span id="currentMatch">ROUND 1 • 12:30 AM</span>
+        </div>
+        <div class="battle-container">
+            <div class="battle-card bc-pink">
+                <div class="vote-percentage" id="voteRed">48%</div>
+                <div class="bc-avatar" style="background-image: url('https://images.unsplash.com/photo-1516280440614-37939bbacd81?w=300');"></div>
+                <h3 class="bc-name">DJ K-OS</h3>
+                <div class="bc-role">Electronic / Techno</div>
+                <div class="vote-progress">
+                    <div class="vote-fill" id="progressRed" style="width: 48%"></div>
+                </div>
+                <button class="bc-btn btn-pink" onclick="openVote('DJ K-OS', 'var(--primary)', 'DJ K-OS')">
+                    <i class="fas fa-fire"></i> HYPE THIS DJ
+                </button>
+            </div>
+            <div class="battle-card bc-cyan">
+                <div class="vote-percentage" id="voteBlue">52%</div>
+                <div class="bc-avatar" style="background-image: url('https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=300');"></div>
+                <h3 class="bc-name">DJ VIBE</h3>
+                <div class="bc-role">House / Future Bass</div>
+                <div class="vote-progress">
+                    <div class="vote-fill" id="progressBlue" style="width: 52%"></div>
+                </div>
+                <button class="bc-btn btn-cyan" onclick="openVote('DJ VIBE', 'var(--accent)', 'DJ VIBE')">
+                    <i class="fas fa-bolt"></i> HYPE THIS DJ
+                </button>
+            </div>
+        </div>
+
+        <!-- 8 Contestants Grid -->
+        <div class="grid-header">
+            ALL DJs
+            <span style="font-size:0.8rem; color:var(--text-sub);">8 DJS • $5K PRIZE</span>
+        </div>
+        <div class="contestant-grid" id="contestantGrid">
+            <!-- Contestants populated by JS -->
+        </div>
+    </div>
+
+    <!-- TAB 2: VIP LIST -->
+    <div id="network" class="view-section">
+        <div class="grid-header">
+            VIP LOUNGE
+            <span style="font-size:0.8rem; color:var(--text-sub);" id="networkCount">124 ACTIVE • 8 NEW</span>
+        </div>
+        <div class="network-grid" id="networkGrid">
+            <!-- VIP cards populated by JS -->
+        </div>
+    </div>
+
+    <!-- TAB 3: REQUEST LINE -->
+    <div id="qa" class="view-section">
+        <button class="main-cta-btn" style="margin-bottom:25px; padding:15px;" onclick="openModal('askModal')">
+            <i class="fas fa-plus"></i> REQUEST A SONG
+        </button>
+        
+        <div id="questionsContainer">
+            <!-- Song requests populated by JS -->
+        </div>
+    </div>
+
+    <!-- QUICK ACTION FAB -->
+    <div class="quick-action-fab" onclick="openQuickActions()">
+        <i class="fas fa-fire"></i>
+    </div>
+
+    <!-- BOTTOM NAV -->
+    <div class="bottom-nav">
+        <div class="nav-item active" onclick="switchTab('pitch', this)">
+            <i class="fas fa-fire"></i>
+            BATTLE
+            <div class="notification-badge" id="navBattleBadge">3</div>
+        </div>
+        <div class="nav-item" onclick="openModal('agendaModal')">
+            <i class="far fa-calendar-alt"></i>
+            SET TIMES
+        </div>
+        <div class="nav-item" onclick="switchTab('network', this)">
+            <i class="fas fa-crown"></i>
+            VIP
+            <div class="notification-badge" id="navNetworkBadge">8</div>
+        </div>
+        <div class="nav-item" onclick="openModal('profileModal')">
+            <i class="fas fa-user-circle"></i>
+            PROFILE
+        </div>
+    </div>
+</div>
+
+<!-- ============ MODALS ============ -->
+
+<!-- VOTE MODAL -->
+<div id="voteModal" class="modal">
+    <div class="modal-box">
+        <div class="m-header">
+            <div class="m-title">SHOW THE HYPE</div>
+            <div style="font-size:0.9rem; color:var(--text-sub); margin-top:8px;">
+                Supporting: <span id="voteTarget" style="color:white; font-weight:900; font-size:1.1rem;">TARGET</span>
+            </div>
+            <span class="m-close" onclick="closeModal('voteModal')">&times;</span>
+        </div>
+        <div class="vote-tabs">
+            <div class="v-tab active" onclick="switchVoteTab('free', this)">FREE HYPE</div>
+            <div class="v-tab" onclick="switchVoteTab('power', this)">POWER HYPE (+$)</div>
+        </div>
+        <div class="m-body">
+            <div id="freeVoteSection">
+                <p style="color:var(--text-sub); font-size:0.95rem; margin-bottom:25px; text-align:center;">
+                    Cast your single audience hype for this round. One vote per person.
+                </p>
+                <button class="submit-action" style="background:var(--border);" onclick="castFreeVote()">
+                    <i class="fas fa-fire"></i> SUBMIT FREE HYPE
+                </button>
+            </div>
+            <div id="powerVoteSection" style="display:none;">
+                <p style="color:var(--text-sub); font-size:0.9rem; margin-bottom:20px;">
+                    Boost your favorite DJ with power hype! Each purchase supports the event.
+                </p>
+                <div class="power-opt" onclick="selectPowerOption(10, 2)">
+                    <span><strong>10 Power Hype</strong><br><small>Basic Boost</small></span>
+                    <span style="color:var(--primary); font-weight:900; font-size:1.1rem;">$2.00</span>
+                </div>
+                <div class="power-opt" onclick="selectPowerOption(50, 10)">
+                    <span><strong>50 Power Hype</strong><br><small>Popular Choice</small></span>
+                    <span style="color:var(--primary); font-weight:900; font-size:1.1rem;">$10.00</span>
+                </div>
+                <div class="power-opt" onclick="selectPowerOption(250, 45)">
+                    <span><strong>250 Power Hype</strong><br><small>Major Influence</small></span>
+                    <span style="color:var(--primary); font-weight:900; font-size:1.1rem;">$45.00</span>
+                </div>
+                <button class="submit-action" onclick="purchasePowerVotes()">
+                    <i class="fas fa-bolt"></i> PAY & BOOST
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- AGENDA MODAL -->
+<div id="agendaModal" class="modal">
+    <div class="modal-box">
+        <div class="m-header">
+            <div class="m-title">EVENT SET TIMES</div>
+            <span class="m-close" onclick="closeModal('agendaModal')">&times;</span>
+        </div>
+        <div class="m-body" style="padding:0 30px 30px;">
+            <ul class="agenda-list" id="agendaList">
+                <!-- Agenda populated by JS -->
+            </ul>
+            <button class="submit-action" style="margin-top:25px;" onclick="closeModal('agendaModal')">
+                CLOSE SCHEDULE
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- PROFILE MODAL -->
+<div id="profileModal" class="modal">
+    <div class="modal-box">
+        <div class="m-header">
+            <div class="m-title">VIP PROFILE</div>
+            <span class="m-close" onclick="closeModal('profileModal')">&times;</span>
+        </div>
+        <div class="m-body">
+            <div class="profile-header-lg">
+                <div id="pAvatar" class="avatar-lg"></div>
+                <h2 id="pName" style="margin:0; font-size:1.5rem; color:white;">Name</h2>
+                <p id="pRole" style="color:var(--text-sub); margin:8px 0 0; font-size:0.9rem;">Favorite Genre</p>
+                <div style="margin-top:10px;">
+                    <span style="background:var(--primary); color:white; padding:4px 12px; border-radius:20px; font-size:0.7rem; font-weight:900;">
+                        <i class="fas fa-crown"></i> VIP LOUNGE
+                    </span>
+                </div>
+            </div>
+            <div class="goal-wrapper">
+                <div class="goal-header">
+                    <span class="goal-title" style="font-weight:900; color:white;">Bar Tab Goal</span>
+                    <button class="contribute-btn-mini" onclick="openContributeModal()">
+                        <i class="fas fa-beer"></i> ADD DRINK
+                    </button>
+                </div>
+                <div class="goal-bar-bg">
+                    <div id="pGoalFill" class="goal-fill"></div>
+                </div>
+                <div style="display:flex; justify-content:space-between; font-size:0.8rem; color:var(--text-sub); margin-top:5px;">
+                    <span>Spent: <strong style="color:var(--primary);" id="raisedAmount">$85</strong></span>
+                    <span>Goal: <strong>$100</strong></span>
+                </div>
+            </div>
+            <button class="submit-action" id="connectButton" onclick="toggleConnect()" style="margin-bottom:15px;">
+                <i class="fas fa-beer"></i> BUY DRINK
+            </button>
+            <div style="text-align:center; font-size:0.9rem; color:var(--primary); font-weight:900; cursor:pointer; padding:12px; border:2px solid var(--border); border-radius:12px;" 
+                 onclick="sendDirectMessage()">
+                <i class="fas fa-comment-alt"></i> SEND MESSAGE
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CONTRIBUTE MODAL -->
+<div id="contributeModal" class="modal">
+    <div class="modal-box" style="border-top-color: var(--primary);">
+        <div class="m-header">
+            <div class="m-title" style="color:var(--primary);">SELECT UPGRADE</div>
+            <span class="m-close" onclick="closeModal('contributeModal')">&times;</span>
+        </div>
+        <div class="m-body">
+            <div class="contribute-modal-content">
+                <p style="color:var(--text-sub); margin-bottom:25px; font-size:0.9rem; text-align:center;">
+                    Choose your upgrade to enhance your club experience.
+                </p>
+                
+                <div class="tier-option" onclick="selectTier(20, 'Cover Charge')">
+                    <div class="tier-price">$20</div>
+                    <div style="font-weight:bold; margin-bottom:5px;">Cover Charge</div>
+                    <div style="font-size:0.8rem; color:var(--text-sub);">Basic entry access</div>
+                </div>
+                
+                <div class="tier-option" onclick="selectTier(10, 'Power Hype')">
+                    <div class="tier-price">$10</div>
+                    <div style="font-weight:bold; margin-bottom:5px;">Power Hype Pack</div>
+                    <div style="font-size:0.8rem; color:var(--text-sub);">50 power hype + access</div>
+                </div>
+                
+                <div class="tier-option" onclick="selectTier(150, 'Bottle Service')">
+                    <div class="tier-price">$150</div>
+                    <div style="font-weight:bold; margin-bottom:5px;">Bottle Service</div>
+                    <div style="font-size:0.8rem; color:var(--text-sub);">VIP lounge, reserved table</div>
+                </div>
+                
+                <button class="submit-action" style="margin-top:20px;" 
+                        onclick="processContribution()" id="contributeBtn">
+                    PROCEED TO PAYMENT
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- REQUEST SONG MODAL -->
+<div id="askModal" class="modal">
+    <div class="modal-box">
+        <div class="m-header">
+            <div class="m-title">REQUEST A SONG</div>
+            <span class="m-close" onclick="closeModal('askModal')">&times;</span>
+        </div>
+        <div class="m-body">
+            <textarea class="ask-textarea" id="questionInput" placeholder="Type your song request for the DJs... (Artist - Song Title)"></textarea>
+            <div style="display:flex; gap:10px; margin-bottom:20px;">
+                <label style="display:flex; align-items:center; font-size:0.8rem;">
+                    <input type="checkbox" id="anonymousCheck" style="margin-right:8px;">
+                    Request anonymously
+                </label>
+                <label style="display:flex; align-items:center; font-size:0.8rem;">
+                    <input type="checkbox" id="urgentCheck" style="margin-right:8px;">
+                    Birthday Shoutout
+                </label>
+            </div>
+            <button class="submit-action" onclick="submitQuestion()">
+                <i class="fas fa-paper-plane"></i> SUBMIT REQUEST
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- PAYMENT MODAL -->
+<div id="payModal" class="modal">
+    <div class="modal-box">
+        <div class="m-header">
+            <div class="m-title">SECURE PAYMENT</div>
+            <span class="m-close" onclick="closeModal('payModal')">&times;</span>
+        </div>
+        <div class="m-body" style="text-align:center;">
+            <h3 id="paymentTitle" style="margin-bottom:20px;">Payment for Upgrade</h3>
+            <div style="font-size:3rem; font-weight:900; margin:20px 0; color:var(--primary);">
+                $<span id="payAmount">0</span>
+            </div>
+            <p style="font-size:0.85rem; color:var(--text-sub); margin-bottom:25px;">
+                Secure checkout via Stripe • 256-bit encryption
+            </p>
+            
+            <div style="background:var(--bg-color); padding:20px; border-radius:12px; margin-bottom:20px;">
+                <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+                    <span>Item:</span>
+                    <span id="paymentItem" style="font-weight:bold;"></span>
+                </div>
+                <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+                    <span>Amount:</span>
+                    <span id="paymentAmount" style="font-weight:bold;"></span>
+                </div>
+                <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+                    <span>Processing fee:</span>
+                    <span id="paymentFee" style="font-weight:bold;"></span>
+                </div>
+                <hr style="border-color:var(--border); margin:15px 0;">
+                <div style="display:flex; justify-content:space-between; font-size:1.1rem; font-weight:bold;">
+                    <span>Total:</span>
+                    <span id="paymentTotal" style="color:var(--primary);"></span>
+                </div>
+            </div>
+            
+            <button class="submit-action" onclick="processPayment()">
+                <i class="fas fa-lock"></i> CONFIRM & PAY
+            </button>
+            
+            <p style="font-size:0.7rem; color:var(--text-sub); margin-top:15px;">
+                By completing this purchase, you agree to our Terms of Service
+            </p>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ============ GLOBAL STATE ============
+    const state = {
+        // Voting state
+        votes: {
+            'DJ K-OS': { count: 4890, percentage: 48, color: 'primary' },
+            'DJ VIBE': { count: 5052, percentage: 52, color: 'accent' },
+            'DJ PULSE': { count: 0, percentage: 0, color: 'primary' },
+            'DJ ECHO': { count: 0, percentage: 0, color: 'accent' },
+            'DJ RHYTHM': { count: 0, percentage: 0, color: 'primary' },
+            'DJ BASS': { count: 0, percentage: 0, color: 'accent' }
+        },
+        totalVotes: 8942,
+        liveAudience: 1247,
+        
+        // VIP List state
+        connections: new Set(),
+        networkProfiles: [
+            { id: 1, name: 'Sarah Jenkins', role: 'House / Techno', img: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=250', goal: 85, connected: false },
+            { id: 2, name: 'David Chen', role: 'Future Bass', img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=250', goal: 40, connected: false },
+            { id: 3, name: 'Elena Ross', role: 'Electronic', img: 'https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?w=250', goal: 95, connected: false },
+            { id: 4, name: 'Marcus Johnson', role: 'Drum & Bass', img: null, goal: 15, connected: false }
+        ],
+        
+        // Request Line state
+        questions: [
+            { id: 1, text: 'Daft Punk - One More Time', author: 'Anonymous', time: '2m ago', votes: 142, voted: true, answered: true, answer: "Added to queue!" },
+            { id: 2, text: "Flume - Never Be Like You", author: 'Mike', time: '15m ago', votes: 89, voted: false, answered: false },
+            { id: 3, text: 'Calvin Harris - Summer', author: 'VIP Table 3', time: '25m ago', votes: 67, voted: false, answered: true, answer: 'Playing next!' }
+        ],
+        
+        // Payment state
+        selectedTier: null,
+        selectedTierName: '',
+        selectedPowerOption: null,
+        selectedPowerVotes: 0,
+        selectedPowerAmount: 0,
+        currentVoteTarget: '',
+        
+        // User state
+        user: {
+            name: 'You',
+            balance: 150,
+            tickets: 1,
+            powerVotes: 50,
+            connected: []
+        }
+    };
+
+    // ============ UTILITY FUNCTIONS ============
+    function formatNumber(num) {
+        return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
+    function getRandomInt(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+    
+    // Fire animation function
+    function createFireAnimation(x, y) {
+        const fire = document.createElement('div');
+        fire.className = 'fire-animation';
+        fire.innerHTML = '🔥';
+        fire.style.left = x + 'px';
+        fire.style.top = y + 'px';
+        document.body.appendChild(fire);
+        
+        setTimeout(() => {
+            if(fire.parentNode) {
+                fire.parentNode.removeChild(fire);
+            }
+        }, 1500);
+    }
+
+    // ============ INITIALIZATION ============
+    document.addEventListener('DOMContentLoaded', function() {
+        initializePage();
+        startLiveUpdates();
+        updateNotificationBadges();
+    });
+
+    function initializePage() {
+        // Initialize DJ grid
+        renderContestants();
+        
+        // Initialize VIP grid
+        renderNetworkGrid();
+        
+        // Initialize Request Line
+        renderQuestions();
+        
+        // Initialize agenda
+        renderAgenda();
+        
+        // Initialize ticker
+        updateTicker();
+        
+        // Set initial time
+        updateMatchTimer();
+        
+        // Set initial notifications
+        updateNotifications();
+    }
+
+    // ============ NAVIGATION ============
+    function switchTab(id, el) {
+        document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(t => t.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        if(el) el.classList.add('active');
+        
+        // Clear notifications for this tab
+        if(id === 'pitch') {
+            state.pitchNotifications = 0;
+            document.getElementById('pitchNotification').style.display = 'none';
+            document.getElementById('navBattleBadge').style.display = 'none';
+        } else if(id === 'network') {
+            state.networkNotifications = 0;
+            document.getElementById('networkNotification').style.display = 'none';
+            document.getElementById('navNetworkBadge').style.display = 'none';
+        }
+        
+        updateNotificationBadges();
+    }
+
+    // ============ MODAL SYSTEM ============
+    function openModal(id, data) {
+        document.getElementById(id).style.display = 'flex';
+        
+        if(id === 'voteModal' && state.currentVoteTarget) {
+            document.getElementById('voteTarget').innerText = state.currentVoteTarget;
+        }
+        
+        if(id === 'profileModal' && data) {
+            openProfile(data.name, data.role, data.img, data.goal);
+        }
+    }
+
+    function closeModal(id) { 
+        document.getElementById(id).style.display = 'none'; 
+        
+        // Reset form if it's the ask modal
+        if(id === 'askModal') {
+            document.getElementById('questionInput').value = '';
+        }
+    }
+
+    // ============ VOTING SYSTEM ============
+    function openVote(name, color, target) {
+        state.currentVoteTarget = target;
+        document.getElementById('voteTarget').innerText = target;
+        switchVoteTab('free', document.querySelector('.v-tab'));
+        openModal('voteModal');
+    }
+
+    function switchVoteTab(type, el) {
+        document.querySelectorAll('.v-tab').forEach(t => t.classList.remove('active'));
+        el.classList.add('active');
+        document.getElementById('freeVoteSection').style.display = type === 'free' ? 'block' : 'none';
+        document.getElementById('powerVoteSection').style.display = type === 'power' ? 'block' : 'none';
+    }
+
+    function selectPowerOption(votes, amount) {
+        state.selectedPowerVotes = votes;
+        state.selectedPowerAmount = amount;
+        
+        document.querySelectorAll('.power-opt').forEach(o => o.classList.remove('selected'));
+        event.target.closest('.power-opt').classList.add('selected');
+    }
+
+    function castFreeVote() {
+        if(!state.currentVoteTarget) return;
+        
+        const target = state.currentVoteTarget;
+        if(state.votes[target]) {
+            // Update vote counts
+            state.votes[target].count += 1;
+            state.totalVotes += 1;
+            
+            // Update percentages
+            updateVotePercentages();
+            
+            // Update UI
+            updateVoteUI();
+            
+            // Show fire animation
+            const rect = document.querySelector('.quick-action-fab').getBoundingClientRect();
+            createFireAnimation(rect.left + 30, rect.top + 30);
+            
+            // Show success
+            showToast('🔥 Hype sent to ' + target + '!');
+            closeModal('voteModal');
+            
+            // Add announcement
+            addAnnouncement('vote', `${target} received new hype!`);
+            
+            // Update notifications
+            state.pitchNotifications = (state.pitchNotifications || 0) + 1;
+            updateNotificationBadges();
+        }
+    }
+
+    function purchasePowerVotes() {
+        if(state.selectedPowerVotes === 0) {
+            showToast('Please select a power hype package first');
+            return;
+        }
+        
+        if(!state.currentVoteTarget) return;
+        
+        const target = state.currentVoteTarget;
+        if(state.votes[target]) {
+            // Update vote counts
+            state.votes[target].count += state.selectedPowerVotes;
+            state.totalVotes += state.selectedPowerVotes;
+            
+            // Update percentages
+            updateVotePercentages();
+            
+            // Update UI
+            updateVoteUI();
+            
+            // Process payment
+            openPay(state.selectedPowerAmount, `${state.selectedPowerVotes} Power Hype for ${target}`);
+            
+            // Add announcement
+            addAnnouncement('power', `${target} received ${state.selectedPowerVotes} power hype!`);
+            
+            // Reset selection
+            state.selectedPowerVotes = 0;
+            state.selectedPowerAmount = 0;
+        }
+    }
+
+    function updateVotePercentages() {
+        const total = Object.values(state.votes).reduce((sum, vote) => sum + vote.count, 0);
+        
+        Object.keys(state.votes).forEach(contestant => {
+            const vote = state.votes[contestant];
+            vote.percentage = total > 0 ? Math.round((vote.count / total) * 100) : 0;
+        });
+        
+        // Update total votes display
+        document.getElementById('totalVotes').textContent = formatNumber(total);
+    }
+
+    function updateVoteUI() {
+        // Update DJ K-OS
+        const alphaVote = state.votes['DJ K-OS'];
+        document.getElementById('voteRed').textContent = alphaVote.percentage + '%';
+        document.getElementById('progressRed').style.width = alphaVote.percentage + '%';
+        
+        // Update DJ VIBE
+        const betaVote = state.votes['DJ VIBE'];
+        document.getElementById('voteBlue').textContent = betaVote.percentage + '%';
+        document.getElementById('progressBlue').style.width = betaVote.percentage + '%';
+        
+        // Update total votes
+        document.getElementById('totalVotes').textContent = formatNumber(state.totalVotes);
+    }
+
+    // ============ CONTRIBUTION & PAYMENT ============
+    function openTierSelection(amount, name) {
+        state.selectedTier = amount;
+        state.selectedTierName = name;
+        openModal('contributeModal');
+    }
+
+    function selectTier(amount, name) {
+        state.selectedTier = amount;
+        state.selectedTierName = name;
+        
+        document.querySelectorAll('.tier-option').forEach(o => o.classList.remove('selected'));
+        event.target.closest('.tier-option').classList.add('selected');
+    }
+
+    function processContribution() {
+        if(!state.selectedTier) {
+            showToast('Please select an upgrade first');
+            return;
+        }
+        
+        openPay(state.selectedTier, state.selectedTierName);
+        closeModal('contributeModal');
+    }
+
+    function openContributeModal() {
+        openModal('contributeModal');
+    }
+
+    function openPay(amount, description) {
+        const fee = amount * 0.029 + 0.30; // Stripe-like fee
+        const total = (amount + fee).toFixed(2);
+        
+        document.getElementById('payAmount').textContent = amount;
+        document.getElementById('paymentTitle').textContent = 'Payment for ' + description;
+        document.getElementById('paymentItem').textContent = description;
+        document.getElementById('paymentAmount').textContent = '$' + amount.toFixed(2);
+        document.getElementById('paymentFee').textContent = '$' + fee.toFixed(2);
+        document.getElementById('paymentTotal').textContent = '$' + total;
+        
+        openModal('payModal');
+    }
+
+    function processPayment() {
+        const btn = document.querySelector('#payModal .submit-action');
+        const original = btn.innerHTML;
+        
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> PROCESSING...';
+        btn.disabled = true;
+        
+        setTimeout(() => {
+            showToast('Payment successful! Enjoy your upgrade.');
+            closeModal('payModal');
+            
+            // Update user balance
+            state.user.balance -= parseFloat(document.getElementById('payAmount').textContent);
+            
+            // If this was a power hype pack, add to user's hype
+            if(state.selectedPowerVotes > 0) {
+                state.user.powerVotes += state.selectedPowerVotes;
+            }
+            
+            // Reset
+            state.selectedTier = null;
+            state.selectedTierName = '';
+            state.selectedPowerVotes = 0;
+            state.selectedPowerAmount = 0;
+            
+            btn.innerHTML = original;
+            btn.disabled = false;
+            
+            // Add announcement
+            addAnnouncement('payment', 'New club upgrade purchased!');
+        }, 1500);
+    }
+
+    // ============ VIP LIST SYSTEM ============
+    function renderNetworkGrid() {
+        const grid = document.getElementById('networkGrid');
+        grid.innerHTML = '';
+        
+        state.networkProfiles.forEach(profile => {
+            const card = document.createElement('div');
+            card.className = 'profile-card-grid';
+            card.onclick = () => openProfileModal(profile);
+            
+            card.innerHTML = `
+                <div class="pcg-avatar" style="background-image: ${profile.img ? `url('${profile.img}')` : 'none'};">
+                    ${!profile.img ? '<i class="fas fa-user"></i>' : ''}
+                </div>
+                <div class="pcg-name">${profile.name}</div>
+                <div class="pcg-role">${profile.role}</div>
+                <button class="pcg-btn" onclick="event.stopPropagation(); toggleConnection(${profile.id})">
+                    ${profile.connected ? 'DRINK SENT' : 'BUY DRINK'}
+                </button>
+            `;
+            
+            grid.appendChild(card);
+        });
+        
+        // Update network count
+        const activeCount = getRandomInt(120, 130);
+        const newCount = getRandomInt(5, 10);
+        document.getElementById('networkCount').textContent = `${activeCount} ACTIVE • ${newCount} NEW`;
+    }
+
+    function openProfileModal(profile) {
+        document.getElementById('pName').textContent = profile.name;
+        document.getElementById('pRole').textContent = profile.role;
+        
+        const avatar = document.getElementById('pAvatar');
+        avatar.style.backgroundImage = profile.img ? `url('${profile.img}')` : 'none';
+        avatar.innerHTML = profile.img ? '' : '<i class="fas fa-user" style="font-size:3rem; color:var(--text-sub); margin-top:25px;"></i>';
+        
+        document.getElementById('raisedAmount').textContent = `$${profile.goal}`;
+        document.getElementById('pGoalFill').style.width = '0%';
+        
+        const connectBtn = document.getElementById('connectButton');
+        connectBtn.innerHTML = profile.connected ? 
+            '<i class="fas fa-check"></i> DRINK SENT' : 
+            '<i class="fas fa-beer"></i> BUY DRINK';
+        connectBtn.dataset.profileId = profile.id;
+        
+        openModal('profileModal');
+        
+        setTimeout(() => {
+            document.getElementById('pGoalFill').style.width = profile.goal + '%';
+        }, 200);
+    }
+
+    function toggleConnection(profileId) {
+        event.stopPropagation();
+        
+        const profile = state.networkProfiles.find(p => p.id === profileId);
+        if(!profile) return;
+        
+        profile.connected = !profile.connected;
+        
+        if(profile.connected) {
+            state.user.connected.push(profileId);
+            showToast(`🍸 Sent drink to ${profile.name}!`);
+            
+            // Add announcement
+            addAnnouncement('connection', `You bought a drink for ${profile.name}`);
+            
+            // Update notification
+            state.networkNotifications = (state.networkNotifications || 0) + 1;
+            updateNotificationBadges();
+        } else {
+            state.user.connected = state.user.connected.filter(id => id !== profileId);
+            showToast(`Canceled drink for ${profile.name}`);
+        }
+        
+        // Update UI
+        renderNetworkGrid();
+        
+        // Update profile modal if open
+        const connectBtn = document.getElementById('connectButton');
+        if(connectBtn.dataset.profileId == profileId) {
+            connectBtn.innerHTML = profile.connected ? 
+                '<i class="fas fa-check"></i> DRINK SENT' : 
+                '<i class="fas fa-beer"></i> BUY DRINK';
+        }
+    }
+
+    function sendDirectMessage() {
+        const profileName = document.getElementById('pName').textContent;
+        showToast(`Message sent to ${profileName}!`);
+        closeModal('profileModal');
+        
+        // Add announcement
+        addAnnouncement('message', `Message sent to ${profileName}`);
+    }
+
+    // ============ REQUEST LINE SYSTEM ============
+    function renderQuestions() {
+        const container = document.getElementById('questionsContainer');
+        container.innerHTML = '';
+        
+        state.questions.forEach((question, index) => {
+            const qaCard = document.createElement('div');
+            qaCard.className = 'qa-card';
+            
+            qaCard.innerHTML = `
+                <div class="upvote-box" onclick="voteQuestion(${question.id})">
+                    <i class="fas fa-chevron-up arrow ${question.voted ? 'active' : ''}"></i>
+                    <span class="count">${question.votes}</span>
+                </div>
+                <div>
+                    <div style="font-weight:900; font-size:1rem; margin-bottom:8px; color:white;">
+                        ${question.text}
+                    </div>
+                    <div style="font-size:0.8rem; color:var(--text-sub); margin-bottom:${question.answered ? '10px' : '0'};">
+                        Requested by <strong style="color:var(--accent);">${question.author}</strong> • ${question.time}
+                        ${question.urgent ? '<span style="background:var(--secondary); color:white; padding:2px 6px; border-radius:4px; margin-left:8px; font-size:0.7rem;">BIRTHDAY</span>' : ''}
+                    </div>
+                    ${question.answered ? `
+                        <div style="font-size:0.8rem; color:var(--text-sub); background: rgba(255,255,255,0.05); padding:8px 12px; border-radius:8px;">
+                            <i class="fas fa-music" style="margin-right:8px;"></i>
+                            <strong>DJ Response:</strong> "${question.answer}"
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+            
+            container.appendChild(qaCard);
+        });
+    }
+
+    function voteQuestion(questionId) {
+        const question = state.questions.find(q => q.id === questionId);
+        if(!question) return;
+        
+        if(question.voted) {
+            question.votes--;
+            question.voted = false;
+        } else {
+            question.votes++;
+            question.voted = true;
+        }
+        
+        renderQuestions();
+        
+        // Add announcement for popular requests
+        if(question.votes > 50) {
+            addAnnouncement('question', `Popular request: "${question.text.substring(0, 30)}..."`);
+        }
+    }
+
+    function submitQuestion() {
+        const input = document.getElementById('questionInput');
+        const text = input.value.trim();
+        
+        if(!text) {
+            showToast('Please enter a song request');
+            return;
+        }
+        
+        const isAnonymous = document.getElementById('anonymousCheck').checked;
+        const isUrgent = document.getElementById('urgentCheck').checked;
+        
+        const newQuestion = {
+            id: state.questions.length + 1,
+            text: text,
+            author: isAnonymous ? 'Anonymous' : state.user.name,
+            time: 'Just now',
+            votes: 0,
+            voted: false,
+            answered: false,
+            urgent: isUrgent
+        };
+        
+        state.questions.unshift(newQuestion);
+        renderQuestions();
+        
+        showToast('Song request submitted!');
+        closeModal('askModal');
+        
+        // Add announcement
+        addAnnouncement('question', `New song request: "${text.substring(0, 40)}..."`);
+        
+        // Update notification
+        state.qaNotifications = (state.qaNotifications || 0) + 1;
+        updateNotificationBadges();
+    }
+
+    // ============ DJ CONTESTANTS ============
+    function renderContestants() {
+        const grid = document.getElementById('contestantGrid');
+        grid.innerHTML = '';
+        
+        const contestants = [
+            { name: 'DJ K-OS', img: 'https://images.unsplash.com/photo-1516280440614-37939bbacd81?w=150', match: 'Live Now • Round 1', active: true },
+            { name: 'DJ VIBE', img: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=150', match: 'Live Now • Round 1', active: true },
+            { name: 'DJ PULSE', img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150', match: 'Up Next • Round 2', active: false },
+            { name: 'DJ ECHO', img: 'https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?w=150', match: 'Up Next • Round 2', active: false },
+            { name: 'DJ RHYTHM', img: 'https://images.unsplash.com/photo-1531427186611-ecfd6d936c79?w=150', match: 'Round 3', active: false },
+            { name: 'DJ BASS', img: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150', match: 'Round 3', active: false }
+        ];
+        
+        contestants.forEach(contestant => {
+            const card = document.createElement('div');
+            card.className = `c-card ${contestant.active ? 'active' : ''}`;
+            card.onclick = () => openVote(contestant.name, 'white', contestant.name);
+            
+            card.innerHTML = `
+                <div class="c-img" style="background-image: url('${contestant.img}');"></div>
+                <div class="c-info">
+                    <div class="c-title">${contestant.name}</div>
+                    <div class="c-sub">${contestant.match}</div>
+                </div>
+                <div class="c-vote-icon">HYPE</div>
+            `;
+            
+            grid.appendChild(card);
+        });
+    }
+
+    // ============ AGENDA ============
+    function renderAgenda() {
+        const agenda = [
+            { time: '09:00 PM', desc: 'Doors Open', current: false },
+            { time: '10:30 PM', desc: 'Opening DJ Set', current: false },
+            { time: '12:30 AM', desc: 'DJ Battle: K-OS vs VIBE', current: true },
+            { time: '01:45 AM', desc: 'DJ Battle: PULSE vs ECHO', current: false },
+            { time: '02:15 AM', desc: 'VIP Lounge Access', current: false },
+            { time: '03:30 AM', desc: 'Semi-Finals', current: false },
+            { time: '05:00 AM', desc: '🏆 Grand Finale & Afterparty', current: false }
+        ];
+        
+        const list = document.getElementById('agendaList');
+        list.innerHTML = '';
+        
+        agenda.forEach(item => {
+            const li = document.createElement('li');
+            li.className = `agenda-item ${item.current ? 'current' : ''}`;
+            
+            li.innerHTML = `
+                <span class="agenda-time">${item.time}</span> 
+                <span class="agenda-desc">
+                    ${item.desc}
+                    ${item.current ? '<span class="current-session">LIVE NOW</span>' : ''}
+                </span>
+            `;
+            
+            list.appendChild(li);
+        });
+    }
+
+    // ============ LIVE UPDATES ============
+    function startLiveUpdates() {
+        // Update live stats every 3 seconds
+        setInterval(updateLiveStats, 3000);
+        
+        // Update match timer every second
+        setInterval(updateMatchTimer, 1000);
+        
+        // Update ticker every 10 seconds
+        setInterval(updateTicker, 10000);
+        
+        // Random announcements
+        setInterval(addRandomAnnouncement, 15000);
+        
+        // Random vote fluctuations
+        setInterval(simulateVoteFluctuations, 5000);
+    }
+
+    function updateLiveStats() {
+        // Update audience count with small random changes
+        const audienceChange = getRandomInt(-5, 10);
+        state.liveAudience = Math.max(1200, state.liveAudience + audienceChange);
+        document.getElementById('liveAudience').textContent = formatNumber(state.liveAudience);
+        
+        // Update total votes with random new votes
+        const newVotes = getRandomInt(10, 50);
+        state.totalVotes += newVotes;
+        document.getElementById('totalVotes').textContent = formatNumber(state.totalVotes);
+        
+        // Update match info occasionally
+        if(Math.random() > 0.7) {
+            const matches = [
+                'ROUND 1 • 12:30 AM',
+                'ROUND 2 • 01:45 AM',
+                'SEMI-FINALS • 03:30 AM'
+            ];
+            const current = document.getElementById('currentMatch');
+            if(current) {
+                current.textContent = matches[getRandomInt(0, matches.length - 1)];
+            }
+        }
+    }
+
+    function updateMatchTimer() {
+        const timer = document.getElementById('matchTimer');
+        if(!timer) return;
+        
+        const parts = timer.textContent.split(':');
+        let minutes = parseInt(parts[0]);
+        let seconds = parseInt(parts[1]);
+        
+        seconds++;
+        if(seconds >= 60) {
+            seconds = 0;
+            minutes++;
+        }
+        
+        timer.textContent = minutes.toString().padStart(2, '0') + ':' + seconds.toString().padStart(2, '0');
+        
+        // Update next session timer
+        const nextTimer = document.getElementById('liveTimer');
+        if(nextTimer) {
+            const nextMinutes = 45 - minutes;
+            nextTimer.textContent = `NEXT: ${nextMinutes > 0 ? nextMinutes + 'm' : 'SOON'}`;
+        }
+    }
+
+    function simulateVoteFluctuations() {
+        // Random small vote changes
+        Object.keys(state.votes).forEach(contestant => {
+            const change = getRandomInt(-3, 5);
+            state.votes[contestant].count = Math.max(0, state.votes[contestant].count + change);
+        });
+        
+        updateVotePercentages();
+        updateVoteUI();
+    }
+
+    // ============ ANNOUNCEMENTS ============
+    function updateTicker() {
+        const announcements = [
+            { icon: 'bullhorn', text: 'Welcome to SOUND CLASH OS Live!' },
+            { icon: 'fire', text: 'DJ K-OS just received 50 power hype!' },
+            { icon: 'crown', text: 'Sarah Jenkins joined the VIP lounge' },
+            { icon: 'music', text: 'New song request for Daft Punk' },
+            { icon: 'trophy', text: 'Next battle starts in 15 minutes!' },
+            { icon: 'bolt', text: 'Bottle service selling fast!' },
+            { icon: 'beer', text: 'VIP lounge open all night' },
+            { icon: 'chart-line', text: 'Hype level just passed 9,000!' }
+        ];
+        
+        const ticker = document.getElementById('announcementTicker');
+        let tickerHTML = '';
+        
+        // Show 3 random announcements
+        const shuffled = [...announcements].sort(() => 0.5 - Math.random());
+        const selected = shuffled.slice(0, 3);
+        
+        selected.forEach(ann => {
+            tickerHTML += `<i class="fas fa-${ann.icon}"></i> ${ann.text} • `;
+        });
+        
+        ticker.innerHTML = tickerHTML;
+    }
+
+    function addRandomAnnouncement() {
+        const types = ['vote', 'connection', 'question', 'payment', 'general'];
+        const type = types[getRandomInt(0, types.length - 1)];
+        
+        switch(type) {
+            case 'vote':
+                const contestants = Object.keys(state.votes);
+                const contestant = contestants[getRandomInt(0, contestants.length - 1)];
+                addAnnouncement('vote', `${contestant} received ${getRandomInt(5, 20)} new hype!`);
+                break;
+            case 'connection':
+                const names = ['Alex Turner', 'Maria Garcia', 'James Wilson', 'Lisa Chen'];
+                const name = names[getRandomInt(0, names.length - 1)];
+                addAnnouncement('connection', `${name} just joined the VIP lounge`);
+                break;
+            case 'general':
+                const messages = [
+                    'Don\'t forget to hype your favorite DJ!',
+                    'VIP lounge access available',
+                    'Request line open all night',
+                    'Bar specials until 2 AM'
+                ];
+                const message = messages[getRandomInt(0, messages.length - 1)];
+                addAnnouncement('general', message);
+                break;
+        }
+    }
+
+    function addAnnouncement(type, text) {
+        // Update notification badges based on type
+        switch(type) {
+            case 'vote':
+                state.pitchNotifications = (state.pitchNotifications || 0) + 1;
+                break;
+            case 'connection':
+                state.networkNotifications = (state.networkNotifications || 0) + 1;
+                break;
+            case 'question':
+                state.qaNotifications = (state.qaNotifications || 0) + 1;
+                break;
+        }
+        
+        updateNotificationBadges();
+        
+        // In a real app, this would add to the ticker
+        console.log(`Announcement: ${text}`);
+    }
+
+    // ============ NOTIFICATIONS ============
+    function updateNotificationBadges() {
+        // Battle notifications
+        const pitchBadge = document.getElementById('pitchNotification');
+        const navBattleBadge = document.getElementById('navBattleBadge');
+        
+        if(state.pitchNotifications > 0) {
+            pitchBadge.style.display = 'block';
+            navBattleBadge.style.display = 'flex';
+            navBattleBadge.textContent = state.pitchNotifications > 9 ? '9+' : state.pitchNotifications;
+        } else {
+            pitchBadge.style.display = 'none';
+            navBattleBadge.style.display = 'none';
+        }
+        
+        // VIP notifications
+        const networkBadge = document.getElementById('networkNotification');
+        const navNetworkBadge = document.getElementById('navNetworkBadge');
+        
+        if(state.networkNotifications > 0) {
+            networkBadge.style.display = 'block';
+            navNetworkBadge.style.display = 'flex';
+            navNetworkBadge.textContent = state.networkNotifications > 9 ? '9+' : state.networkNotifications;
+        } else {
+            networkBadge.style.display = 'none';
+            navNetworkBadge.style.display = 'none';
+        }
+        
+        // Request line notifications (just tab badge)
+        const qaBadge = document.getElementById('qaNotification');
+        if(state.qaNotifications > 0) {
+            qaBadge.style.display = 'block';
+        } else {
+            qaBadge.style.display = 'none';
+        }
+    }
+
+    function updateNotifications() {
+        // Simulate random notifications
+        if(Math.random() > 0.7) {
+            state.pitchNotifications = (state.pitchNotifications || 0) + 1;
+        }
+        if(Math.random() > 0.8) {
+            state.networkNotifications = (state.networkNotifications || 0) + 1;
+        }
+        if(Math.random() > 0.6) {
+            state.qaNotifications = (state.qaNotifications || 0) + 1;
+        }
+        
+        updateNotificationBadges();
+        
+        // Schedule next update
+        setTimeout(updateNotifications, getRandomInt(10000, 30000));
+    }
+
+    // ============ QUICK ACTIONS ============
+    function openQuickActions() {
+        const actions = [
+            { text: 'Buy Power Hype', icon: 'bolt', action: () => openVote('Quick Hype', 'white', 'Quick Hype') },
+            { text: 'Request Song', icon: 'music', action: () => openModal('askModal') },
+            { text: 'View Set Times', icon: 'calendar-alt', action: () => openModal('agendaModal') },
+            { text: 'Get VIP Pass', icon: 'crown', action: () => openModal('contributeModal') }
+        ];
+        
+        // Create quick action menu
+        const menu = document.createElement('div');
+        menu.style.cssText = `
+            position: fixed;
+            bottom: 150px;
+            right: 20px;
+            background: var(--modal-bg);
+            border-radius: 16px;
+            padding: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            z-index: 199;
+            min-width: 200px;
+            border: 1px solid var(--border);
+            backdrop-filter: blur(10px);
+        `;
+        
+        actions.forEach(action => {
+            const btn = document.createElement('div');
+            btn.style.cssText = `
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                padding: 12px 15px;
+                cursor: pointer;
+                border-radius: 8px;
+                transition: background 0.2s;
+                color: white;
+            `;
+            btn.onmouseenter = () => btn.style.background = 'rgba(255,255,255,0.1)';
+            btn.onmouseleave = () => btn.style.background = 'transparent';
+            btn.onclick = () => {
+                action.action();
+                document.body.removeChild(menu);
+            };
+            
+            btn.innerHTML = `
+                <i class="fas fa-${action.icon}" style="color: var(--primary);"></i>
+                <span style="font-weight: 600;">${action.text}</span>
+            `;
+            
+            menu.appendChild(btn);
+        });
+        
+        // Close button
+        const closeBtn = document.createElement('div');
+        closeBtn.style.cssText = `
+            text-align: center;
+            padding: 10px;
+            margin-top: 10px;
+            color: var(--text-sub);
+            font-size: 0.8rem;
+            cursor: pointer;
+            border-top: 1px solid var(--border);
+        `;
+        closeBtn.textContent = 'Close';
+        closeBtn.onclick = () => document.body.removeChild(menu);
+        menu.appendChild(closeBtn);
+        
+        // Add to body
+        document.body.appendChild(menu);
+        
+        // Close on outside click
+        setTimeout(() => {
+            const closeOnClick = (e) => {
+                if(!menu.contains(e.target) && !e.target.closest('.quick-action-fab')) {
+                    document.body.removeChild(menu);
+                    document.removeEventListener('click', closeOnClick);
+                }
+            };
+            document.addEventListener('click', closeOnClick);
+        }, 100);
+    }
+
+    // ============ UI HELPERS ============
+    function showToast(message) {
+        // Remove existing toast
+        const existing = document.querySelector('.toast');
+        if(existing) existing.remove();
+        
+        // Create toast
+        const toast = document.createElement('div');
+        toast.className = 'toast';
+        toast.style.cssText = `
+            position: fixed;
+            top: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--primary);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: bold;
+            z-index: 1000;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            animation: slideDown 0.3s ease;
+        `;
+        
+        toast.textContent = message;
+        document.body.appendChild(toast);
+        
+        // Remove after 3 seconds
+        setTimeout(() => {
+            toast.style.animation = 'slideUp 0.3s ease';
+            setTimeout(() => {
+                if(toast.parentNode) {
+                    toast.parentNode.removeChild(toast);
+                }
+            }, 300);
+        }, 3000);
+    }
+
+    // Add CSS for animations
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes slideDown {
+            from { transform: translateX(-50%) translateY(-20px); opacity: 0; }
+            to { transform: translateX(-50%) translateY(0); opacity: 1; }
+        }
+        @keyframes slideUp {
+            from { transform: translateX(-50%) translateY(0); opacity: 1; }
+            to { transform: translateX(-50%) translateY(-20px); opacity: 0; }
+        }
+    `;
+    document.head.appendChild(style);
+</script>
+</body>
+</html>
