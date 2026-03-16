@@ -34,6 +34,17 @@ import {
   MessageSquare,
   ShoppingBag,
   Check,
+  Headphones,
+  Music,
+  Gift,
+  Flame,
+  Trophy,
+  Package,
+  Timer,
+  Ticket,
+  Wine,
+  Mic,
+  Heart,
 } from "lucide-react";
 import {
   SOUND_CLASH_DATA,
@@ -82,6 +93,16 @@ const features = [
   { icon: Shield, title: "Fraud Prevention", desc: "AI-powered ticket verification" },
   { icon: Globe, title: "Multi-venue", desc: "Manage all locations from one dashboard" },
   { icon: Cpu, title: "AI Predictions", desc: "Predict crowd flow and bar demand" },
+  { icon: Trophy, title: "Vote Packs", desc: "Monetized crowd voting — guests buy packs to influence the show" },
+  { icon: Headphones, title: "Tip the DJ", desc: "Direct digital tips from fans straight to your DJ" },
+  { icon: Flame, title: "Flash Offers", desc: "Time-limited in-event deals that spike revenue instantly" },
+];
+
+const votePackTiers = [
+  { id: "starter", label: "Starter Pack", votes: 5, price: 2, emoji: "🗳️", color: "#6366F1", popular: false },
+  { id: "hype", label: "Hype Pack", votes: 20, price: 5, emoji: "🔥", color: "#FF7A00", popular: false },
+  { id: "power", label: "Power Pack", votes: 50, price: 10, emoji: "⚡", color: "#FF7A00", popular: true },
+  { id: "squad", label: "Squad Pack", votes: 100, price: 15, emoji: "👑", color: "#10B981", popular: false },
 ];
 
 const battleMetrics = [
@@ -265,6 +286,26 @@ export default function EventOSDemo({ onNavigate }: EventOSDemoProps) {
   const chartContainerRef = useRef<HTMLDivElement>(null);
   const [chartWidth, setChartWidth] = useState(0);
 
+  // Vote packs
+  const [packsPurchased, setPacksPurchased] = useState<Record<string, number>>({});
+  const [voteRevenue, setVoteRevenue] = useState(1423);
+  const [totalVotesCast, setTotalVotesCast] = useState(2847);
+
+  // Tip the DJ
+  const [selectedTip, setSelectedTip] = useState<number | null>(null);
+  const [customTip, setCustomTip] = useState("");
+  const [tipTotal, setTipTotal] = useState(284);
+  const [tipSent, setTipSent] = useState(false);
+  const [recentTips, setRecentTips] = useState([
+    { name: "Table 7", amount: 50, emoji: "🔥" },
+    { name: "Sarah K.", amount: 20, emoji: "💜" },
+    { name: "Anonymous", amount: 100, emoji: "👑" },
+  ]);
+
+  // Flash sale
+  const [flashSecondsLeft, setFlashSecondsLeft] = useState(847);
+  const [flashClaimed, setFlashClaimed] = useState(false);
+
   // Misc UI state
   const [showStore, setShowStore] = useState(false);
   const [notification, setNotification] = useState<string | null>(null);
@@ -316,6 +357,33 @@ export default function EventOSDemo({ onNavigate }: EventOSDemoProps) {
     const t = setInterval(() => setBattleStep((p) => (p + 1) % (battleMetrics.length + 1)), 1600);
     return () => clearInterval(t);
   }, []);
+
+  // Flash sale countdown
+  useEffect(() => {
+    const iv = setInterval(() => setFlashSecondsLeft((p) => Math.max(0, p - 1)), 1000);
+    return () => clearInterval(iv);
+  }, []);
+
+  const formatFlash = (s: number) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
+
+  const buyVotePack = (pack: typeof votePackTiers[0]) => {
+    setPacksPurchased((p) => ({ ...p, [pack.id]: (p[pack.id] || 0) + 1 }));
+    setVoteRevenue((p) => p + pack.price);
+    setTotalVotesCast((p) => p + pack.votes);
+    notify(`🗳️ ${pack.votes} votes added! Go vote for your favourite!`);
+  };
+
+  const sendTip = () => {
+    const amount = selectedTip || parseInt(customTip) || 0;
+    if (!amount) return;
+    setTipTotal((p) => p + amount);
+    setRecentTips((prev) => [{ name: "You", amount, emoji: "🎉" }, ...prev.slice(0, 4)]);
+    setTipSent(true);
+    setSelectedTip(null);
+    setCustomTip("");
+    notify(`💸 $${amount} tip sent to the DJ!`);
+    setTimeout(() => setTipSent(false), 3000);
+  };
 
   const notify = (msg: string) => {
     setNotification(msg);
@@ -594,6 +662,243 @@ export default function EventOSDemo({ onNavigate }: EventOSDemoProps) {
           </div>
         </section>
 
+        {/* ── Vote Packs ────────────────────────────────────────────────────── */}
+        <section>
+          <div className="flex flex-wrap items-start justify-between gap-4 mb-6">
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <span className="w-2 h-2 rounded-full animate-pulse inline-block" style={{ backgroundColor: primary }} />
+                <span className="text-xs font-black uppercase tracking-widest" style={{ color: primary }}>Core Revenue Driver · Used in 12/12 Events</span>
+              </div>
+              <h2 className="text-2xl sm:text-3xl font-black">Vote Packs</h2>
+              <p className="text-white/50 text-sm mt-1">Guests buy votes to crown their favourite. Pure monetised engagement.</p>
+            </div>
+            <div className="rounded-2xl px-5 py-3 border text-right" style={{ backgroundColor: `${primary}15`, borderColor: `${primary}44` }}>
+              <div className="text-2xl font-black" style={{ color: primary }}>${voteRevenue.toLocaleString()}</div>
+              <div className="text-xs text-white/40">vote revenue tonight</div>
+            </div>
+          </div>
+
+          {/* Stats row */}
+          <div className="grid grid-cols-3 gap-3 mb-5">
+            {[
+              { label: "Votes Cast", value: totalVotesCast.toLocaleString(), icon: Trophy },
+              { label: "Vote Revenue", value: `$${voteRevenue.toLocaleString()}`, icon: DollarSign },
+              { label: "Avg per Guest", value: "18 votes", icon: BarChart2 },
+            ].map((s) => (
+              <div key={s.label} className="rounded-xl p-3 border border-white/10 text-center" style={{ backgroundColor: "#111" }}>
+                <s.icon className="w-4 h-4 mx-auto mb-1 opacity-60" style={{ color: primary }} />
+                <div className="font-black text-sm sm:text-base">{s.value}</div>
+                <div className="text-[10px] text-white/40">{s.label}</div>
+              </div>
+            ))}
+          </div>
+
+          {/* Pack cards */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            {votePackTiers.map((pack) => {
+              const bought = packsPurchased[pack.id] || 0;
+              return (
+                <motion.div
+                  key={pack.id}
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.97 }}
+                  onClick={() => buyVotePack(pack)}
+                  className="relative rounded-2xl p-4 border cursor-pointer"
+                  style={{
+                    backgroundColor: pack.popular ? `${primary}15` : "#111",
+                    borderColor: pack.popular ? primary : "#333",
+                    boxShadow: pack.popular ? `0 0 20px ${primary}22` : "none",
+                  }}
+                >
+                  {pack.popular && (
+                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full text-[10px] font-black text-black whitespace-nowrap" style={{ backgroundColor: primary }}>
+                      ⚡ MOST POPULAR
+                    </div>
+                  )}
+                  <div className="text-3xl mb-2">{pack.emoji}</div>
+                  <div className="font-black text-sm">{pack.label}</div>
+                  <div className="text-2xl font-black mt-1" style={{ color: pack.popular ? primary : "#fff" }}>
+                    {pack.votes} <span className="text-xs font-normal text-white/40">votes</span>
+                  </div>
+                  <div className="text-[10px] text-white/40 mb-3">${pack.price} · {(pack.price / pack.votes).toFixed(2)}¢/vote</div>
+                  <div
+                    className="w-full py-2 rounded-xl text-xs font-black text-center transition-all"
+                    style={{
+                      backgroundColor: bought > 0 ? "#22C55E" : pack.popular ? primary : "#ffffff22",
+                      color: pack.popular || bought > 0 ? "#000" : "#fff",
+                    }}
+                  >
+                    {bought > 0 ? `✓ ${bought}× bought` : `$${pack.price}`}
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
+        </section>
+
+        {/* ── Flash Sale ────────────────────────────────────────────────────── */}
+        <section>
+          <motion.div
+            animate={{ borderColor: flashSecondsLeft > 0 ? [`${primary}44`, `${primary}99`, `${primary}44`] : "#22C55E44" }}
+            transition={{ duration: 1.5, repeat: Infinity }}
+            className="rounded-2xl p-5 border flex flex-col sm:flex-row items-center gap-4"
+            style={{ backgroundColor: flashSecondsLeft > 0 ? `${primary}0D` : "#22C55E0D" }}
+          >
+            <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 text-2xl" style={{ backgroundColor: `${primary}22` }}>
+              {flashSecondsLeft > 0 ? "⚡" : "✅"}
+            </div>
+            <div className="flex-1 text-center sm:text-left">
+              <div className="text-xs font-black uppercase tracking-wider mb-1" style={{ color: primary }}>
+                {flashSecondsLeft > 0 ? "⚡ Flash Offer — Live Right Now" : "Offer Claimed!"}
+              </div>
+              <div className="font-black text-lg">VIP Table Upgrade — 50% Off</div>
+              <div className="text-sm text-white/50">Table 12 just became available · Includes bottle service + priority service</div>
+            </div>
+            <div className="flex items-center gap-4 flex-shrink-0">
+              {flashSecondsLeft > 0 && (
+                <div className="text-center">
+                  <div className="text-2xl font-black font-mono" style={{ color: primary }}>{formatFlash(flashSecondsLeft)}</div>
+                  <div className="text-[10px] text-white/40">remaining</div>
+                </div>
+              )}
+              <motion.button
+                whileTap={{ scale: 0.95 }}
+                onClick={() => { setFlashClaimed(true); notify("🎉 VIP Table secured! Check your app."); }}
+                disabled={flashClaimed || flashSecondsLeft === 0}
+                className="px-5 py-2.5 rounded-xl font-black text-sm transition-all disabled:opacity-50"
+                style={{ backgroundColor: flashClaimed ? "#22C55E" : primary, color: "#000" }}
+              >
+                {flashClaimed ? "✓ Claimed!" : "Claim Now"}
+              </motion.button>
+            </div>
+          </motion.div>
+        </section>
+
+        {/* ── Tip the DJ ────────────────────────────────────────────────────── */}
+        <section>
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: `${primary}22` }}>
+              <Headphones className="w-5 h-5" style={{ color: primary }} />
+            </div>
+            <div className="flex-1">
+              <h2 className="text-2xl sm:text-3xl font-black">Tip the DJ</h2>
+              <p className="text-white/50 text-sm">Digital tips direct from fans — your DJ earns more, guests connect deeper</p>
+            </div>
+            <div className="text-right">
+              <div className="text-2xl font-black" style={{ color: primary }}>${tipTotal}</div>
+              <div className="text-xs text-white/40">in tips tonight</div>
+            </div>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-4">
+            {/* Tip widget */}
+            <div className="rounded-2xl p-5 border border-white/10" style={{ backgroundColor: "#111" }}>
+              <div className="flex items-center gap-3 mb-5">
+                <img src="https://i.pravatar.cc/56?img=8" alt="DJ" className="w-14 h-14 rounded-full object-cover border-2" style={{ borderColor: primary }} />
+                <div>
+                  <div className="font-black">{labels.appName.split(" ")[0]} · DJ</div>
+                  <div className="text-xs text-white/40">Playing now · {liveTickets} listeners</div>
+                  <div className="flex items-center gap-0.5 mt-1">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} size={11} fill={primary} style={{ color: primary }} />
+                    ))}
+                  </div>
+                </div>
+                <div className="ml-auto text-right">
+                  <div className="text-xs text-white/40">energy</div>
+                  <div className="flex items-center gap-1">
+                    {[...Array(5)].map((_, i) => (
+                      <div key={i} className="w-1.5 rounded-full" style={{ height: `${10 + i * 4}px`, backgroundColor: i < 4 ? primary : "#333" }} />
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <div className="text-xs font-bold text-white/40 uppercase tracking-wider mb-2">Quick Tip</div>
+              <div className="grid grid-cols-4 gap-2 mb-3">
+                {[5, 10, 20, 50].map((amount) => (
+                  <button
+                    key={amount}
+                    onClick={() => { setSelectedTip(amount); setCustomTip(""); }}
+                    className="py-2.5 rounded-xl text-sm font-black transition-all"
+                    style={{
+                      backgroundColor: selectedTip === amount ? primary : "#ffffff15",
+                      color: selectedTip === amount ? "#000" : "#fff",
+                    }}
+                  >
+                    ${amount}
+                  </button>
+                ))}
+              </div>
+
+              <div className="flex gap-2">
+                <input
+                  type="number"
+                  placeholder="Custom amount..."
+                  value={customTip}
+                  onChange={(e) => { setCustomTip(e.target.value); setSelectedTip(null); }}
+                  className="flex-1 px-3 py-2.5 rounded-xl text-sm outline-none border border-white/10"
+                  style={{ backgroundColor: "#ffffff0a", color: "#fff" }}
+                />
+                <motion.button
+                  whileTap={{ scale: 0.95 }}
+                  onClick={sendTip}
+                  disabled={!selectedTip && !customTip}
+                  className="px-5 py-2.5 rounded-xl text-sm font-black text-black transition-all disabled:opacity-40 flex items-center gap-1.5"
+                  style={{ backgroundColor: tipSent ? "#22C55E" : primary }}
+                >
+                  {tipSent ? <>✓ Sent!</> : <><Gift size={14} /> Send</>}
+                </motion.button>
+              </div>
+            </div>
+
+            {/* Recent tips feed */}
+            <div className="rounded-2xl p-5 border border-white/10" style={{ backgroundColor: "#111" }}>
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-xs font-bold text-white/40 uppercase tracking-wider">Live Tip Feed</h3>
+                <span className="text-xs px-2 py-0.5 rounded-full font-bold animate-pulse" style={{ backgroundColor: `${primary}22`, color: primary }}>LIVE</span>
+              </div>
+              <div className="space-y-2 mb-4">
+                <AnimatePresence mode="popLayout">
+                  {recentTips.map((tip, i) => (
+                    <motion.div
+                      key={i}
+                      initial={{ opacity: 0, x: 20, height: 0 }}
+                      animate={{ opacity: 1, x: 0, height: "auto" }}
+                      exit={{ opacity: 0, x: -20 }}
+                      className="flex items-center gap-3 p-2.5 rounded-xl bg-white/5"
+                    >
+                      <div className="w-8 h-8 rounded-full flex items-center justify-center text-base flex-shrink-0" style={{ backgroundColor: `${primary}22` }}>
+                        {tip.emoji}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="text-sm font-bold truncate">{tip.name}</div>
+                        <div className="text-[10px] text-white/40">just now</div>
+                      </div>
+                      <div className="font-black text-sm flex-shrink-0" style={{ color: primary }}>${tip.amount}</div>
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
+              </div>
+              <div className="pt-4 border-t border-white/10 flex items-center justify-between">
+                <div className="flex items-center gap-2 text-sm text-white/50">
+                  <Heart size={14} style={{ color: primary }} /> Total tips tonight
+                </div>
+                <span className="text-xl font-black" style={{ color: primary }}>${tipTotal}</span>
+              </div>
+              <div className="mt-3 grid grid-cols-3 gap-2 text-center">
+                {[{ label: "Avg Tip", val: "$" + Math.round(tipTotal / Math.max(recentTips.length, 1)) }, { label: "Top Tip", val: "$100" }, { label: "Tips Sent", val: recentTips.length }].map((s) => (
+                  <div key={s.label} className="rounded-lg py-2 bg-white/5">
+                    <div className="font-black text-sm">{s.val}</div>
+                    <div className="text-[10px] text-white/40">{s.label}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* ── Manual vs EventOS Comparison ─────────────────────────────────── */}
         <section>
           <div className="text-center mb-6">
@@ -710,6 +1015,54 @@ export default function EventOSDemo({ onNavigate }: EventOSDemoProps) {
                 <p className="text-sm text-white/50">{f.desc}</p>
               </motion.div>
             ))}
+          </div>
+        </section>
+
+        {/* ── Revenue Streams ───────────────────────────────────────────────── */}
+        <section>
+          <div className="text-center mb-8">
+            <h2 className="text-2xl sm:text-3xl font-black mb-2">Every Revenue Stream, One Platform</h2>
+            <p className="text-white/50 text-sm">EventOS unlocks 6 ways to make money at every event</p>
+          </div>
+          <div className="rounded-2xl border p-5 sm:p-6" style={{ backgroundColor: "#111", borderColor: `${primary}33` }}>
+            {[
+              { icon: Ticket, label: "Ticket Sales", amount: 52000, pct: 82, color: primary },
+              { icon: Wine, label: "Bottle Service", amount: 38000, pct: 72, color: "#10B981" },
+              { icon: Trophy, label: "Vote Packs", amount: 14200, pct: 54, color: "#6366F1" },
+              { icon: Music, label: "Song Requests", amount: 4200, pct: 22, color: "#F59E0B" },
+              { icon: Gift, label: "DJ Tips", amount: 2840, pct: 18, color: "#EC4899" },
+              { icon: Crown, label: "VIP Upgrades", amount: 8500, pct: 33, color: "#8B5CF6" },
+            ].map((stream, i) => (
+              <motion.div
+                key={stream.label}
+                className="flex items-center gap-3 mb-4 last:mb-0"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: i * 0.08 }}
+              >
+                <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style={{ backgroundColor: `${stream.color}22` }}>
+                  <stream.icon size={15} style={{ color: stream.color }} />
+                </div>
+                <div className="w-28 sm:w-36 flex-shrink-0">
+                  <div className="text-sm font-bold truncate">{stream.label}</div>
+                  <div className="text-xs text-white/40">${stream.amount.toLocaleString()}</div>
+                </div>
+                <div className="flex-1 h-2 rounded-full bg-white/10 overflow-hidden">
+                  <motion.div
+                    className="h-full rounded-full"
+                    style={{ backgroundColor: stream.color }}
+                    initial={{ width: 0 }}
+                    animate={{ width: `${stream.pct}%` }}
+                    transition={{ duration: 1, delay: 0.3 + i * 0.1 }}
+                  />
+                </div>
+                <div className="text-xs font-black w-8 text-right" style={{ color: stream.color }}>{stream.pct}%</div>
+              </motion.div>
+            ))}
+            <div className="mt-5 pt-5 border-t border-white/10 flex items-center justify-between">
+              <span className="font-bold text-white/60">Total Event Revenue</span>
+              <span className="text-2xl font-black" style={{ color: primary }}>$119,740</span>
+            </div>
           </div>
         </section>
 
